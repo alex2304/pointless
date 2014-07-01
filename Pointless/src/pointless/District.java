@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class District {
     private int pCountFPlayer, pCoundSPlayer;
-    private boolean ownerId;
+    private int ownerId;
 
    
     private ArrayList<Integer> brdrCount;
