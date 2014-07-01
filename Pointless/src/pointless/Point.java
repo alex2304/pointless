@@ -12,7 +12,7 @@ package pointless;
  */
 public class Point {
     /**статус точки (0 = не поставлена; 1 = активна; 2 = недоступна;) */
-    public enum PointState { Empty, Active, NotAvailable }
+    public enum PointState { EMPTY, ACTIVE, NOTAVAILABLE }
     private PointState pointState;    
     
     /**координата X точки */
@@ -91,7 +91,7 @@ public class Point {
         hostPlayer = HostPlayer.Free;
         X = 0;
         Y = 0;
-        pointState = PointState.Empty;
+        pointState = PointState.EMPTY;
         i = 0;
         j = 0;
     }

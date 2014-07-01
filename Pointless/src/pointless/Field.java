@@ -192,7 +192,7 @@ public class Field {
         for (int i = 0; i < verticalPointCount; i++){   
             points.add(new ArrayList<Point>());     //cоздаём строки
             for (int j = 0; j < horizontalPointCount; j++){
-                points.get(i).add( new Point((float)lineSize*(j+1), (float)lineSize*(i+1), Point.PointState.Empty, Point.HostPlayer.Free, i, j) ); //создаём столбцы для каждой из строк
+                points.get(i).add( new Point((float)lineSize*(j+1), (float)lineSize*(i+1), Point.PointState.EMPTY, Point.HostPlayer.Free, i, j) ); //создаём столбцы для каждой из строк
             }
         }
         //установка цвета
@@ -238,7 +238,7 @@ public class Field {
     }
     
     /** Изменение свойств точки по приказу контроллера */
-    private boolean changePoint(Point p, Point.HostPlayer h, Point.PointState s){
+    public boolean changePoint(Point p, Point.HostPlayer h, Point.PointState s){
         if (p != null){
                     p.setHostPlayer(h);  //устанавливаем игрока-хозяина для точки
                     p.setPointState(s);  //устанавливаем статус для точки
