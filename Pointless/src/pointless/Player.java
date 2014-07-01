@@ -13,9 +13,15 @@ package pointless;
 public class Player {
     private String name;
     private int id, pCount;
-
+    private static int pId;
     public Player() {
         
+    }
+    
+    public Player(String newName) {
+        name = newName;
+        pId++;
+        id=pId;
     }
     
     public String getName() {

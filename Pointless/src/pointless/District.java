@@ -14,6 +14,9 @@ import java.util.ArrayList;
  */
 public class District {
     private int pCountFPlayer, pCoundSPlayer;
+    private int ownerId;
+
+   
     private ArrayList<Integer> brdrCount;
 
     public District () {
@@ -43,8 +46,13 @@ public class District {
     public void setBrdrCount(ArrayList<Integer> brdrCount) {
         this.brdrCount = brdrCount;
     }
+    
+     public int isOwnerId() {
+        return ownerId;
+    }
 
-   
-    
-    
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+     
 }
