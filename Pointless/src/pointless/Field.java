@@ -154,5 +154,10 @@ public class Field {
         color2 = c2;
     }
     
-    
+    public void drawDistrict (District newDistrict) {
+        districts.add(newDistrict); // необходимо удалить внутренние области
+        // непосредственно отрисовка
+        
+        
+    }
 }

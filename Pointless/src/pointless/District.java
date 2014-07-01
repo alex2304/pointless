@@ -47,11 +47,11 @@ public class District {
         this.brdrCount = brdrCount;
     }
     
-     public boolean isOwnerId() {
+     public int isOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(boolean ownerId) {
+    public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
     }
      
