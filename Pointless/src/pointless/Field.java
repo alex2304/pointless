@@ -219,8 +219,8 @@ public class Field {
         
     }
     
-    /** Изменение свойств точки по приказу контроллера */
-    private boolean changePoint(float x, float y, int r, Point.HostPlayer h, Point.PointState s){
+    /** Позволяет получить точку, попадающую в заданную область */
+    public Point getPointByCoor(float x, float y, int r){
         for (int i = 0; i < verticalPointCount; i++){
             for (int j = 0; j < this.horizontalPointCount; j++)
             {
@@ -230,12 +230,20 @@ public class Field {
                 points.get(i).get(j).getY() <= (y + lineSize / 3) ) )*/
                 if ( (x - points.get(i).get(j).getX())*(x - points.get(i).get(j).getX())    //условие попадания точки в круг
                 + (y - points.get(i).get(j).getY())*(y - points.get(i).get(j).getY()) <= r*r ){ //вокруг точки, которую нажал пользователь
-                    points.get(i).get(j).setHostPlayer(h);  //устанавливаем игрока-хозяина для точки
-                    points.get(i).get(j).setPointState(s);  //устанавливаем статус для точки
-                    return true;
+                    return points.get(i).get(j);
                 } 
             }
         }
+        return null;
+    }
+    
+    /** Изменение свойств точки по приказу контроллера */
+    private boolean changePoint(Point p, Point.HostPlayer h, Point.PointState s){
+        if (p != null){
+                    p.setHostPlayer(h);  //устанавливаем игрока-хозяина для точки
+                    p.setPointState(s);  //устанавливаем статус для точки
+                    return true;
+         }
         return false;
     }
     
