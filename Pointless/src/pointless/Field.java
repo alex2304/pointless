@@ -127,7 +127,6 @@ public class Field {
         Height = 0;
         color1 = "";
         color2 = "";
-        
     }
     
     /**
