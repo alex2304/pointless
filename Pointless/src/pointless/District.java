@@ -13,37 +13,50 @@ import java.util.ArrayList;
  * @author Пётр
  */
 public class District {
-    private int pCountFPlayer, pCoundSPlayer;
+    /**количество точек внутри области игрока, захватившего область, и другого игрока */
+    private int pCountFPlayer, pCountSPlayer;
+    
+    /**номер игрока, захватившего поле */
     private int ownerId;
-
-   
+    
+    /**список точек, составляющих замкнутую область */
     private ArrayList<Integer> brdrCount;
 
-    public District () {
-        
+    public District (final int ownerId) {
+        this.ownerId = ownerId;
+        brdrCount = new ArrayList<Integer>();
+        pCountFPlayer = 0;
+        pCountSPlayer = 0;
+    }
+    
+    public District (final int ownerId, final int pCountFPlayer, final int pCountSPlayer, final ArrayList<Integer> brdrCount) {
+        this.ownerId = ownerId;
+        this.brdrCount = brdrCount;
+        this.pCountFPlayer = pCountFPlayer;
+        this.pCountSPlayer = pCountSPlayer;
     }
     
     public int getpCountFPlayer() {
         return pCountFPlayer;
     }
 
-    public int getpCoundSPlayer() {
-        return pCoundSPlayer;
+    public int getpCountSPlayer() {
+        return pCountSPlayer;
     }
 
     public ArrayList<Integer> getBrdrCount() {
         return brdrCount;
     }
 
-    public void setpCountFPlayer(int pCountFPlayer) {
+    public void setpCountFPlayer(final int pCountFPlayer) {
         this.pCountFPlayer = pCountFPlayer;
     }
 
-    public void setpCoundSPlayer(int pCoundSPlayer) {
-        this.pCoundSPlayer = pCoundSPlayer;
+    public void setpCountSPlayer(final int pCountSPlayer) {
+        this.pCountSPlayer = pCountSPlayer;
     }
 
-    public void setBrdrCount(ArrayList<Integer> brdrCount) {
+    public void setBrdrCount(final ArrayList<Integer> brdrCount) {
         this.brdrCount = brdrCount;
     }
     
@@ -51,7 +64,7 @@ public class District {
         return ownerId;
     }
 
-    public void setOwnerId(int ownerId) {
+    public void setOwnerId(final int ownerId) {
         this.ownerId = ownerId;
     }
      

@@ -11,9 +11,13 @@ package pointless;
  * @author Пётр
  */
 public class Player {
+    /** Имя игрока (вводится пользователем) */
     private String name;
+    /** Айдишник игрока и количество захваченных точек противника */
     private int id, pCount;
-    private static int pId;
+    /** Имя игрока (вводится пользователем) */
+    private static int pId = 0;
+    
     public Player() {
         
     }
