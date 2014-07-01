@@ -6,17 +6,36 @@
 
 package pointless;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+
 /**
  *
  * @author Leha
  */
 public class PointlessInterface extends javax.swing.JFrame {
 
+    Controller controller;
+    Graphics g;
+    Timer timer;
     /**
      * Creates new form PointlessInterface
      */
     public PointlessInterface() {
         initComponents();
+        timer = new Timer(30, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (controller != null && g != null){
+                    controller.getField().drawField(g);
+                }
+            }
+        });
     }
 
     /**
@@ -28,13 +47,17 @@ public class PointlessInterface extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSeparator1 = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(51, 204, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(0, 250));
@@ -43,7 +66,7 @@ public class PointlessInterface extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 786, Short.MAX_VALUE)
+            .addGap(0, 800, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -53,6 +76,18 @@ public class PointlessInterface extends javax.swing.JFrame {
         jTabbedPane1.setBackground(new java.awt.Color(255, 0, 0));
 
         jMenu1.setText("Игра");
+
+        jMenuItem1.setText("Новая игра");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Выход");
+        jMenu1.add(jMenuItem2);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Справка");
@@ -65,19 +100,33 @@ public class PointlessInterface extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        int lineSize = 20;
+        controller = new Controller();
+        g = jPanel1.getGraphics();
+        int w = jPanel1.getWidth(), h = jPanel1.getHeight();
+        if (controller.initGame(w, h, lineSize, g, Color.red, Color.green, Color.yellow, "Vasya", "Vazgen")){
+            timer.start();
+            JOptionPane.showMessageDialog(null,"Vse zbs");
+        } else {
+            JOptionPane.showMessageDialog(null,"Vse huevo");
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -117,7 +166,10 @@ public class PointlessInterface extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
     

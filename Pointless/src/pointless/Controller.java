@@ -7,6 +7,7 @@
 package pointless;
 
 import java.awt.Color;
+import java.awt.Graphics;
 
 /**
  *
@@ -23,11 +24,11 @@ public class Controller {
         if (tmp != null) {
             switch (playerId){
                     case 1: {
-                        field.changePoint(tmp, Point.HostPlayer.Player1, Point.PointState.ACTIVE);
+                        getField().changePoint(tmp, Point.HostPlayer.Player1, Point.PointState.ACTIVE);
                         break;
                     }
                     case 2: {
-                        field.changePoint(tmp, Point.HostPlayer.Player2, Point.PointState.ACTIVE);
+                        getField().changePoint(tmp, Point.HostPlayer.Player2, Point.PointState.ACTIVE);
                         break;
                     }
                     default: {
@@ -44,7 +45,7 @@ public class Controller {
     }
     
     public Point pointCheck (float pX, float pY, int r) {
-        Point temp = field.getPointByCoor(pX, pY, r);
+        Point temp = getField().getPointByCoor(pX, pY, r);
         if (temp != null)
             if (temp.getPointState() == Point.PointState.EMPTY) return temp;
         return null;
@@ -66,10 +67,10 @@ public class Controller {
     
     /** Инициализация игры. Передаёт данные для создания поля. Если поле создано, то создаёт игроков.
      * @return можно ли начинать игру */
-    public boolean initGame(int width, int height, int lineSize, Color p1, Color p2, Color fieldColor, String name1, String name2) {
+    public boolean initGame(int width, int height, int lineSize, Graphics g, Color p1, Color p2, Color fieldColor, String name1, String name2) {
                 
-        this.field = new Field();
-        gameStart = this.field.initializeGame(width, height, lineSize, p1, p2, fieldColor);
+        this.setField(new Field());
+        gameStart = this.getField().initializeGame(width, height, lineSize, p1, p2, fieldColor, g);
         
         if (gameStart) {
             this.P1 = new Player(name1);
@@ -77,6 +78,20 @@ public class Controller {
         }
         
         return gameStart;
+    }
+
+    /**
+     * @return the field
+     */
+    public Field getField() {
+        return field;
+    }
+
+    /**
+     * @param field the field to set
+     */
+    public void setField(Field field) {
+        this.field = field;
     }
     
     

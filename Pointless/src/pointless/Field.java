@@ -6,8 +6,9 @@
 
 package pointless;
 
-import java.util.ArrayList;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
 
 /**
  *
@@ -40,6 +41,10 @@ public class Field {
      * Количество точек в поле
      */
     private int horizontalPointCount, verticalPointCount;
+    /**
+     * Расстояние между точками
+     */
+    private int lineSize;
     //==== ДАННЫЕ КЛАССА ==== \\
 
     
@@ -181,7 +186,7 @@ public class Field {
     
     //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
     /** Инициализация поля, готового к игре */
-    public boolean initializeGame(int width, int height, int lineSize, Color c1, Color c2, Color fieldColor){
+    public boolean initializeGame(int width, int height, int lineSize, Color c1, Color c2, Color fieldColor, Graphics g){
         horizontalPointCount = width / lineSize - 1; //количество точек по горизонтали
         verticalPointCount = height / lineSize - 1;  //количество точек по вертикали
         
@@ -200,19 +205,37 @@ public class Field {
         this.color1 = c1;
         this.color2 = c2;
         
+        //установка размеров поля и расстояния между клетками
+        this.Width = width;
+        this.Height = height;
+        this.lineSize = lineSize;
+        
         //отрисовка поля
-        drawField();
+        drawField(g);
         
         return true;
     }
     
     /** Отрисовка поля с точками и областями */
-    private void drawField(){
+    public void drawField(Graphics g){
+        //float x1 = 0, y1 = ;
+        for (int i = 0; i <= this.verticalPointCount; i++){
+            g.drawLine(0, i*this.lineSize, this.Width, i*this.lineSize);
+        }
+        for (int i = 0; i <= this.horizontalPointCount; i++){
+            g.drawLine(i*this.lineSize, 0, i*this.lineSize, this.Height);
+        }
         
+        for (int i = 0; i < this.verticalPointCount; i++){
+            for (int j = 0; j < this.horizontalPointCount; j++){
+                //g.setPaintMode();
+                g.drawOval((int)this.points.get(i).get(j).getX()-2, (int)this.points.get(i).get(j).getY()-2, 5, 5);
+            }
+        }
     }
     
     /** Добавление новой области и её отрисовка */
-    private void drawDistrict (District newDistrict) {
+    public void drawDistrict (District newDistrict) {
         districts.add(newDistrict); // необходимо удалить внутренние области
         // непосредственно отрисовка
         
