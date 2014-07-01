@@ -35,6 +35,11 @@ public class Field {
      * Цвет поля
      */
     private Color fieldColor;
+    
+    /**
+     * Количество точек в поле
+     */
+    private int horizontalPointCount, verticalPointCount;
     //==== ДАННЫЕ КЛАССА ==== \\
 
     
@@ -140,6 +145,8 @@ public class Field {
         color1 = Color.BLACK;
         color2 = Color.BLACK;
         fieldColor = Color.BLACK;
+        horizontalPointCount = 0;
+        verticalPointCount = 0;
     }
     /**
      * конструктор с инициализацией размеров поля
@@ -152,6 +159,8 @@ public class Field {
         color1 = Color.BLACK;
         color2 = Color.BLACK;
         fieldColor = Color.BLACK;
+        horizontalPointCount = 0;
+        verticalPointCount = 0;
     }
     /**
      * конструктор с полной инициализацией
@@ -164,6 +173,8 @@ public class Field {
         color1 = c1;
         color2 = c2;
         this.fieldColor = fieldColor;
+        horizontalPointCount = 0;
+        verticalPointCount = 0;
     }
     //==== КОНСТРУКТОРЫ И ДЕСТРУКТОРЫ ==== \\
     
@@ -171,17 +182,17 @@ public class Field {
     //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
     /** Инициализация поля, готового к игре */
     public boolean initializeGame(int width, int height, int lineSize, Color c1, Color c2, Color fieldColor){
-        float horizontalPointCount = width / lineSize - 1; //количество точек по горизонтали
-        float verticalPointCount = height / lineSize - 1;  //количество точек по вертикали
+        horizontalPointCount = width / lineSize - 1; //количество точек по горизонтали
+        verticalPointCount = height / lineSize - 1;  //количество точек по вертикали
         
         //проверка входных параметров
-        if (horizontalPointCount <= 0 || verticalPointCount <= 0) return false; 
+        if (horizontalPointCount <= 0 || verticalPointCount <= 0) {horizontalPointCount = 0; verticalPointCount = 0; return false; }
         
         //заполнение массива точек
         for (int i = 0; i < verticalPointCount; i++){   
             points.add(new ArrayList<Point>());     //cоздаём строки
             for (int j = 0; j < horizontalPointCount; j++){
-                points.get(i).add( new Point((float)lineSize*(j+1), (float)lineSize*(i+1), (short)0, (short)0, i, j) ); //создаём столбцы для каждой из строк
+                points.get(i).add( new Point((float)lineSize*(j+1), (float)lineSize*(i+1), Point.PointState.Empty, Point.HostPlayer.Free, i, j) ); //создаём столбцы для каждой из строк
             }
         }
         //установка цвета
@@ -209,9 +220,23 @@ public class Field {
     }
     
     /** Изменение свойств точки по приказу контроллера */
-    private boolean changePoint(float x, float y, int n){
-        
-        return true;
+    private boolean changePoint(float x, float y, int r, Point.HostPlayer h, Point.PointState s){
+        for (int i = 0; i < verticalPointCount; i++){
+            for (int j = 0; j < this.horizontalPointCount; j++)
+            {
+                /*if ( ( points.get(i).get(j).getX() >= (x - lineSize / 3) || //условие попадания точки в квадрат
+                points.get(i).get(j).getX() <= (x + lineSize / 3) ) &&  //вокруг точки, которую
+                ( points.get(i).get(j).getY() >= (y - lineSize / 3) ||  //нажал пользователь
+                points.get(i).get(j).getY() <= (y + lineSize / 3) ) )*/
+                if ( (x - points.get(i).get(j).getX())*(x - points.get(i).get(j).getX())    //условие попадания точки в круг
+                + (y - points.get(i).get(j).getY())*(y - points.get(i).get(j).getY()) <= r*r ){ //вокруг точки, которую нажал пользователь
+                    points.get(i).get(j).setHostPlayer(h);  //устанавливаем игрока-хозяина для точки
+                    points.get(i).get(j).setPointState(s);  //устанавливаем статус для точки
+                    return true;
+                } 
+            }
+        }
+        return false;
     }
     
     //==== ОСНОВНЫЕ МЕТОДЫ ==== \\

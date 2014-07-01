@@ -12,7 +12,8 @@ package pointless;
  */
 public class Point {
     /**статус точки (0 = не поставлена; 1 = активна; 2 = недоступна;) */
-    private short pointState;    
+    public enum PointState { Empty, Active, NotAvailable }
+    private PointState pointState;    
     
     /**координата X точки */
     private float X;            
@@ -21,7 +22,8 @@ public class Point {
     private float Y;             
     
     /**номер игрока, "владеющего" точкой (0, 1 или 2; если 0 - точка "свободна") */
-    private short hostPlayer;  
+    public enum HostPlayer { Free, Player1, Player2 }
+    private HostPlayer hostPlayer;  
     
     /**номера точки по горизонтали и вертикали в массиве точек */
     private int i, j;
@@ -29,14 +31,14 @@ public class Point {
     /**
      * @return the pointState
      */
-    public short getPointState() {
+    public PointState getPointState() {
         return pointState;
     }
 
     /**
      * @param pointState the pointState to set
      */
-    public void setPointState(short pointState) {
+    public void setPointState(PointState pointState) {
         this.pointState = pointState;
     }
 
@@ -71,14 +73,14 @@ public class Point {
     /**
      * @return the N
      */
-    public short getHostPlayer() {
+    public HostPlayer getHostPlayer() {
         return hostPlayer;
     }
 
     /**
      * @param N the N to set
      */
-    public void setHostPlayer(short N) {
+    public void setHostPlayer(HostPlayer N) {
         this.hostPlayer = N;
     }
     
@@ -86,10 +88,10 @@ public class Point {
      * конструктор по-умолчанию
      */
     public Point() {
-        hostPlayer = 0;
+        hostPlayer = HostPlayer.Free;
         X = 0;
         Y = 0;
-        pointState = 0;
+        pointState = PointState.Empty;
         i = 0;
         j = 0;
     }
@@ -97,7 +99,7 @@ public class Point {
     /**
      * полная инициализация
      */
-    public Point(float x, float y, short p, short h, int i, int j) {
+    public Point(float x, float y, PointState p, HostPlayer h, int i, int j) {
         hostPlayer = h;
         X = x;
         Y = y;
