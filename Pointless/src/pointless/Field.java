@@ -9,6 +9,7 @@ package pointless;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -140,6 +141,37 @@ public class Field {
     public void setFieldColor(Color fieldColor) {
         this.fieldColor = fieldColor;
     }
+    
+    public int getVerticalPointCount() {
+        return verticalPointCount;
+    }
+
+    public void setVerticalPointCount(int verticalPointCount) {
+        this.verticalPointCount = verticalPointCount;
+    }
+     /**
+     * Радиус активной точки
+     * @return the activeRadius
+     */
+    public int getActiveRadius() {
+        return activeRadius;
+    }
+
+    /**
+     * Радиус активной точки
+     * @param activeRadius the activeRadius to set
+     */
+    public void setActiveRadius(int activeRadius) {
+        this.activeRadius = activeRadius;
+    }
+
+    /**
+     * Количество точек в поле
+     * @return the horizontalPointCount
+     */
+    public int getHorizontalPointCount() {
+        return horizontalPointCount;
+    }
      //==== МОДИФИКАТОРЫ И СЕЛЕКТОРЫ ==== \\
     
     
@@ -196,12 +228,12 @@ public class Field {
         verticalPointCount = height / lineSize - 1;  //количество точек по вертикали
         
         //проверка входных параметров
-        if (horizontalPointCount <= 0 || verticalPointCount <= 0) {horizontalPointCount = 0; verticalPointCount = 0; return false; }
+        if (getHorizontalPointCount() <= 0 || verticalPointCount <= 0) {horizontalPointCount = 0; verticalPointCount = 0; return false; }
         
         //заполнение массива точек
         for (int i = 0; i < verticalPointCount; i++){   
             points.add(new ArrayList<Point>());     //cоздаём строки
-            for (int j = 0; j < horizontalPointCount; j++){
+            for (int j = 0; j < getHorizontalPointCount(); j++){
                 points.get(i).add( new Point((float)lineSize*(j+1), (float)lineSize*(i+1), Point.PointState.EMPTY, Point.HostPlayer.Free, i, j, notActiveRadius) ); //создаём столбцы для каждой из строк
             }
         }
@@ -239,19 +271,22 @@ public class Field {
             g.drawLine(0, i*this.lineSize, this.Width, i*this.lineSize);
         }
         g.setColor(Color.decode("#799EE7"));//A3C1E7
-        for (int i = 0; i <= this.horizontalPointCount; i++){
+        for (int i = 0; i <= this.getHorizontalPointCount(); i++){
             g.drawLine(i*this.lineSize, 0, i*this.lineSize, this.Height);
         }
         g.setColor(Color.WHITE);
         for (int i = 0; i < this.verticalPointCount; i++){
-            for (int j = 0; j < this.horizontalPointCount; j++){
+            for (int j = 0; j < this.getHorizontalPointCount(); j++){
                 if (this.points.get(i).get(j).getPointState() == Point.PointState.ACTIVE) {
                     this.points.get(i).get(j).setRadius(this.activeRadius);
                     if (this.points.get(i).get(j).getHostPlayer() == Point.HostPlayer.Player1) {
                         g.setColor(this.color1);
                     } else g.setColor(this.color2);
                     g.fillOval((int)this.points.get(i).get(j).getX()-offsetActive, (int)this.points.get(i).get(j).getY()-offsetActive, this.points.get(i).get(j).getRadius(), this.points.get(i).get(j).getRadius());
-                } else{
+                } else if (this.points.get(i).get(j).getPointState() == Point.PointState.NOTAVAILABLE){
+                    g.setColor(Color.GREEN);
+                    g.fillOval((int)this.points.get(i).get(j).getX()-offsetNotActive, (int)this.points.get(i).get(j).getY()-offsetNotActive, this.points.get(i).get(j).getRadius(), this.points.get(i).get(j).getRadius());
+                } else {
                     g.setColor(Color.WHITE);
                     g.fillOval((int)this.points.get(i).get(j).getX()-offsetNotActive, (int)this.points.get(i).get(j).getY()-offsetNotActive, this.points.get(i).get(j).getRadius(), this.points.get(i).get(j).getRadius());
                 }
@@ -261,17 +296,17 @@ public class Field {
     }
     
     /** Добавление новой области и её отрисовка */
-    public void drawDistrict (District newDistrict) {
+    public void createNewDistrict (District newDistrict) {
         districts.add(newDistrict); // необходимо удалить внутренние области
-        // непосредственно отрисовка
-        
-        
+        for (int i = 0; i < newDistrict.getPointsArray().size(); i++){
+            this.getPointByCoor(newDistrict.getPointsArray().get(i).getX(), newDistrict.getPointsArray().get(i).getY()).setPointState(Point.PointState.NOTAVAILABLE);
+        }
     }
-    
+  
     /** Позволяет получить точку, попадающую в заданную область */
     public Point getPointByCoor(float x, float y){
         for (int i = 0; i < verticalPointCount; i++){
-            for (int j = 0; j < this.horizontalPointCount; j++)
+            for (int j = 0; j < this.getHorizontalPointCount(); j++)
             {
                 /*if ( ( points.get(i).get(j).getX() >= (x - lineSize / 3) || //условие попадания точки в квадрат
                 points.get(i).get(j).getX() <= (x + lineSize / 3) ) &&  //вокруг точки, которую
@@ -298,20 +333,4 @@ public class Field {
     }
     
     //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
-
-    /**
-     * Радиус активной точки
-     * @return the activeRadius
-     */
-    public int getActiveRadius() {
-        return activeRadius;
-    }
-
-    /**
-     * Радиус активной точки
-     * @param activeRadius the activeRadius to set
-     */
-    public void setActiveRadius(int activeRadius) {
-        this.activeRadius = activeRadius;
-    }
 }

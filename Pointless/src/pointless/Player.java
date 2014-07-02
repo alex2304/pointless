@@ -17,6 +17,8 @@ public class Player {
     private int id, pCount;
     /** Имя игрока (вводится пользователем) */
     private static int pId = 0;
+    /** Номер хода игрока */
+    private int stepNumber;
     
     public Player() {
         
@@ -26,6 +28,7 @@ public class Player {
         name = newName;
         pId++;
         id=pId;
+        stepNumber = 0;
     }
     
     public String getName() {
@@ -50,6 +53,22 @@ public class Player {
 
     public void setpCount(int pCount) {
         this.pCount = pCount;
+    }
+
+    /**
+     * Номер хода игрока
+     * @return the stepNumber
+     */
+    public int getStepNumber() {
+        return stepNumber;
+    }
+
+    /**
+     * Номер хода игрока
+     * @param stepNumber the stepNumber to set
+     */
+    public void setStepNumber(int stepNumber) {
+        this.stepNumber = stepNumber;
     }
     
 }
