@@ -219,17 +219,23 @@ public class Field {
     /** Отрисовка поля с точками и областями */
     public void drawField(Graphics g){
         //float x1 = 0, y1 = ;
+        g.setColor(Color.BLACK);
         for (int i = 0; i <= this.verticalPointCount; i++){
             g.drawLine(0, i*this.lineSize, this.Width, i*this.lineSize);
         }
+        g.setColor(Color.BLACK);
         for (int i = 0; i <= this.horizontalPointCount; i++){
             g.drawLine(i*this.lineSize, 0, i*this.lineSize, this.Height);
         }
-        
+        g.setColor(Color.WHITE);
         for (int i = 0; i < this.verticalPointCount; i++){
             for (int j = 0; j < this.horizontalPointCount; j++){
-                //g.setPaintMode();
-                g.drawOval((int)this.points.get(i).get(j).getX()-2, (int)this.points.get(i).get(j).getY()-2, 5, 5);
+                if (this.points.get(i).get(j).getPointState() == Point.PointState.ACTIVE) {
+                    if (this.points.get(i).get(j).getHostPlayer() == Point.HostPlayer.Player1) {
+                        g.setColor(this.color1);
+                    } else g.setColor(this.color2);
+                } else g.setColor(Color.WHITE);
+                g.fillOval((int)this.points.get(i).get(j).getX()-2, (int)this.points.get(i).get(j).getY()-2, 5, 5);
             }
         }
     }

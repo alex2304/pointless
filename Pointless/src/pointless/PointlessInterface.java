@@ -27,7 +27,7 @@ public class PointlessInterface extends javax.swing.JFrame {
      */
     public PointlessInterface() {
         initComponents();
-        timer = new Timer(30, new ActionListener() {
+        timer = new Timer(600, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -61,6 +61,11 @@ public class PointlessInterface extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(51, 204, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(0, 250));
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -125,6 +130,10 @@ public class PointlessInterface extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Vse huevo");
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        controller.action(1, evt.getX(), evt.getY(), 20);
+    }//GEN-LAST:event_jPanel1MouseClicked
 
     
     /**
