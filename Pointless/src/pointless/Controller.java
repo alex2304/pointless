@@ -19,8 +19,8 @@ public class Controller {
     private Field field;
     
     /** Ход игрока. PlayerId указывается в main */
-    public boolean action(int playerId, float pX, float pY, int r) {
-        Point tmp = pointCheck(pX,pY,r);
+    public boolean action(int playerId, float pX, float pY) {
+        Point tmp = pointCheck(pX,pY);
         if (tmp != null) {
             switch (playerId){
                     case 1: {
@@ -44,8 +44,8 @@ public class Controller {
  
     }
     
-    public Point pointCheck (float pX, float pY, int r) {
-        Point temp = getField().getPointByCoor(pX, pY, r);
+    public Point pointCheck (float pX, float pY) {
+        Point temp = this.getField().getPointByCoor(pX, pY);
         if (temp != null)
             if (temp.getPointState() == Point.PointState.EMPTY) return temp;
         return null;
@@ -67,10 +67,10 @@ public class Controller {
     
     /** Инициализация игры. Передаёт данные для создания поля. Если поле создано, то создаёт игроков.
      * @return можно ли начинать игру */
-    public boolean initGame(int width, int height, int lineSize, Graphics g, Color p1, Color p2, Color fieldColor, String name1, String name2) {
+    public boolean initGame(int width, int height, int lineSize, int notActiveRadius, int activeRadius, Graphics g, Color p1, Color p2, Color fieldColor, String name1, String name2) {
                 
         this.setField(new Field());
-        gameStart = this.getField().initializeGame(width, height, lineSize, p1, p2, fieldColor, g);
+        gameStart = this.getField().initializeGame(width, height, lineSize, p1, p2, fieldColor, g, notActiveRadius, activeRadius);
         
         if (gameStart) {
             this.P1 = new Player(name1);

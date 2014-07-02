@@ -7,6 +7,7 @@
 package pointless;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,11 +23,16 @@ public class PointlessInterface extends javax.swing.JFrame {
     Controller controller;
     Graphics g;
     Timer timer;
+    Point.HostPlayer activePlayer;
+    int squareSize = 23;
+    int notActiveRadius = 4;
+    int activeRadius = 10;
     /**
      * Creates new form PointlessInterface
      */
     public PointlessInterface() {
         initComponents();
+        activePlayer = Point.HostPlayer.Player1;
         timer = new Timer(600, new ActionListener() {
 
             @Override
@@ -59,11 +65,17 @@ public class PointlessInterface extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(51, 204, 255));
+        jPanel1.setBackground(new java.awt.Color(243, 250, 243));
+        jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jPanel1.setPreferredSize(new java.awt.Dimension(0, 250));
         jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel1MouseClicked(evt);
+            }
+        });
+        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jPanel1MouseMoved(evt);
             }
         });
 
@@ -71,7 +83,7 @@ public class PointlessInterface extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGap(0, 897, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -81,6 +93,17 @@ public class PointlessInterface extends javax.swing.JFrame {
         jTabbedPane1.setBackground(new java.awt.Color(255, 0, 0));
 
         jMenu1.setText("Игра");
+        jMenu1.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+                jMenu1MenuCanceled(evt);
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+                jMenu1MenuDeselected(evt);
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                jMenu1MenuSelected(evt);
+            }
+        });
 
         jMenuItem1.setText("Новая игра");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -105,35 +128,88 @@ public class PointlessInterface extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 897, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //кнопка "новая игра"
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        int lineSize = 20;
         controller = new Controller();
         g = jPanel1.getGraphics();
         int w = jPanel1.getWidth(), h = jPanel1.getHeight();
-        if (controller.initGame(w, h, lineSize, g, Color.red, Color.green, Color.yellow, "Vasya", "Vazgen")){
+        if (controller.initGame(w, h, squareSize, notActiveRadius, activeRadius, g, Color.red, Color.blue, Color.yellow, "Vasya", "Vazgen")){
             timer.start();
-            JOptionPane.showMessageDialog(null,"Vse zbs");
+            JOptionPane.showMessageDialog(null,"Tut budet spravka");
         } else {
-            JOptionPane.showMessageDialog(null,"Vse huevo");
+            JOptionPane.showMessageDialog(null,"Sorry, the game does not started!");
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    //выбор пользователем одной из точек
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
-        controller.action(1, evt.getX(), evt.getY(), 20);
+        if (activePlayer == Point.HostPlayer.Player1){
+            if (controller.action(1, evt.getX(), evt.getY())){
+                activePlayer = Point.HostPlayer.Player2;
+                controller.getField().drawField(g);
+            }
+        } else
+        if (activePlayer == Point.HostPlayer.Player2){
+            if (controller.action(2, evt.getX(), evt.getY())){
+                activePlayer = Point.HostPlayer.Player1;
+                controller.getField().drawField(g);
+            }
+                
+        }
     }//GEN-LAST:event_jPanel1MouseClicked
+    
+    //изменение курсора при наведении на доступную точку
+    private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
+        if (controller != null && g != null){
+            Point p = controller.getField().getPointByCoor(evt.getX(), evt.getY());
+            if (p != null){
+                if (Cursor.getDefaultCursor() == jPanel1.getCursor()){  //если стандартный курсор
+                    jPanel1.setCursor(Cursor.getPredefinedCursor(1));
+                }
+            } else {
+                if (Cursor.getDefaultCursor() != jPanel1.getCursor()){
+                    jPanel1.setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        }
+    }//GEN-LAST:event_jPanel1MouseMoved
+
+    //событие выпада меню
+    private void jMenu1MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu1MenuSelected
+        //JOptionPane.showMessageDialog(null,"gg");
+        timer.stop();
+    }//GEN-LAST:event_jMenu1MenuSelected
+
+    //событие пи клике на что-то другое
+    private void jMenu1MenuDeselected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu1MenuDeselected
+        if (controller != null && timer != null && g != null){
+            //JOptionPane.showMessageDialog(null,"vp");
+            timer.start();
+            controller.getField().drawField(g);
+        }
+    }//GEN-LAST:event_jMenu1MenuDeselected
+
+    //событие при отмене выбора меню
+    private void jMenu1MenuCanceled(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu1MenuCanceled
+        if (controller != null && timer != null && g != null){
+            JOptionPane.showMessageDialog(null,"aaa");
+            timer.start();
+            controller.getField().drawField(g);
+        }
+    }//GEN-LAST:event_jMenu1MenuCanceled
 
     
     /**

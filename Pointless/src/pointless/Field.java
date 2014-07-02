@@ -45,7 +45,12 @@ public class Field {
      * Расстояние между точками
      */
     private int lineSize;
+    /**
+     * Радиус активной точки
+     */
+    private int activeRadius;
     //==== ДАННЫЕ КЛАССА ==== \\
+    private int notActiveRadius;
 
     
     //==== МОДИФИКАТОРЫ И СЕЛЕКТОРЫ ==== \\
@@ -186,7 +191,7 @@ public class Field {
     
     //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
     /** Инициализация поля, готового к игре */
-    public boolean initializeGame(int width, int height, int lineSize, Color c1, Color c2, Color fieldColor, Graphics g){
+    public boolean initializeGame(int width, int height, int lineSize, Color c1, Color c2, Color fieldColor, Graphics g, int notActiveRadius, int activeRadius){
         horizontalPointCount = width / lineSize - 1; //количество точек по горизонтали
         verticalPointCount = height / lineSize - 1;  //количество точек по вертикали
         
@@ -197,7 +202,7 @@ public class Field {
         for (int i = 0; i < verticalPointCount; i++){   
             points.add(new ArrayList<Point>());     //cоздаём строки
             for (int j = 0; j < horizontalPointCount; j++){
-                points.get(i).add( new Point((float)lineSize*(j+1), (float)lineSize*(i+1), Point.PointState.EMPTY, Point.HostPlayer.Free, i, j) ); //создаём столбцы для каждой из строк
+                points.get(i).add( new Point((float)lineSize*(j+1), (float)lineSize*(i+1), Point.PointState.EMPTY, Point.HostPlayer.Free, i, j, notActiveRadius) ); //создаём столбцы для каждой из строк
             }
         }
         //установка цвета
@@ -209,6 +214,8 @@ public class Field {
         this.Width = width;
         this.Height = height;
         this.lineSize = lineSize;
+        this.activeRadius = activeRadius;
+        this.notActiveRadius = notActiveRadius;
         
         //отрисовка поля
         drawField(g);
@@ -218,12 +225,13 @@ public class Field {
     
     /** Отрисовка поля с точками и областями */
     public void drawField(Graphics g){
-        //float x1 = 0, y1 = ;
-        g.setColor(Color.BLACK);
+        int offsetActive = 4, offsetNotActive = 2;
+        
+        g.setColor(Color.decode("#799EE7"));
         for (int i = 0; i <= this.verticalPointCount; i++){
             g.drawLine(0, i*this.lineSize, this.Width, i*this.lineSize);
         }
-        g.setColor(Color.BLACK);
+        g.setColor(Color.decode("#799EE7"));//A3C1E7
         for (int i = 0; i <= this.horizontalPointCount; i++){
             g.drawLine(i*this.lineSize, 0, i*this.lineSize, this.Height);
         }
@@ -231,11 +239,16 @@ public class Field {
         for (int i = 0; i < this.verticalPointCount; i++){
             for (int j = 0; j < this.horizontalPointCount; j++){
                 if (this.points.get(i).get(j).getPointState() == Point.PointState.ACTIVE) {
+                    this.points.get(i).get(j).setRadius(this.activeRadius);
                     if (this.points.get(i).get(j).getHostPlayer() == Point.HostPlayer.Player1) {
                         g.setColor(this.color1);
                     } else g.setColor(this.color2);
-                } else g.setColor(Color.WHITE);
-                g.fillOval((int)this.points.get(i).get(j).getX()-2, (int)this.points.get(i).get(j).getY()-2, 5, 5);
+                    g.fillOval((int)this.points.get(i).get(j).getX()-offsetActive, (int)this.points.get(i).get(j).getY()-offsetActive, this.points.get(i).get(j).getRadius(), this.points.get(i).get(j).getRadius());
+                } else{
+                    g.setColor(Color.WHITE);
+                    g.fillOval((int)this.points.get(i).get(j).getX()-offsetNotActive, (int)this.points.get(i).get(j).getY()-offsetNotActive, this.points.get(i).get(j).getRadius(), this.points.get(i).get(j).getRadius());
+                }
+                
             }
         }
     }
@@ -249,7 +262,7 @@ public class Field {
     }
     
     /** Позволяет получить точку, попадающую в заданную область */
-    public Point getPointByCoor(float x, float y, int r){
+    public Point getPointByCoor(float x, float y){
         for (int i = 0; i < verticalPointCount; i++){
             for (int j = 0; j < this.horizontalPointCount; j++)
             {
@@ -258,7 +271,7 @@ public class Field {
                 ( points.get(i).get(j).getY() >= (y - lineSize / 3) ||  //нажал пользователь
                 points.get(i).get(j).getY() <= (y + lineSize / 3) ) )*/
                 if ( (x - points.get(i).get(j).getX())*(x - points.get(i).get(j).getX())    //условие попадания точки в круг
-                + (y - points.get(i).get(j).getY())*(y - points.get(i).get(j).getY()) <= r*r ){ //вокруг точки, которую нажал пользователь
+                + (y - points.get(i).get(j).getY())*(y - points.get(i).get(j).getY()) <= this.activeRadius*this.activeRadius ){ //вокруг точки, которую нажал пользователь
                     return points.get(i).get(j);
                 } 
             }
@@ -271,10 +284,27 @@ public class Field {
         if (p != null){
                     p.setHostPlayer(h);  //устанавливаем игрока-хозяина для точки
                     p.setPointState(s);  //устанавливаем статус для точки
+                    p.setRadius(this.activeRadius);
                     return true;
          }
         return false;
     }
     
     //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
+
+    /**
+     * Радиус активной точки
+     * @return the activeRadius
+     */
+    public int getActiveRadius() {
+        return activeRadius;
+    }
+
+    /**
+     * Радиус активной точки
+     * @param activeRadius the activeRadius to set
+     */
+    public void setActiveRadius(int activeRadius) {
+        this.activeRadius = activeRadius;
+    }
 }

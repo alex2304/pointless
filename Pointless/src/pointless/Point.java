@@ -27,6 +27,25 @@ public class Point {
     
     /**номера точки по горизонтали и вертикали в массиве точек */
     private int i, j;
+    
+    /**радиус точки */
+    private int radius;
+    
+    /**
+     * радиус точки
+     * @return the radius
+     */
+    public int getRadius() {
+        return radius;
+    }
+
+    /**
+     * радиус точки
+     * @param radius the radius to set
+     */
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
 
     /**
      * @return the pointState
@@ -94,18 +113,20 @@ public class Point {
         pointState = PointState.EMPTY;
         i = 0;
         j = 0;
+        radius = 0;
     }
     
     /**
      * полная инициализация
      */
-    public Point(float x, float y, PointState p, HostPlayer h, int i, int j) {
+    public Point(float x, float y, PointState p, HostPlayer h, int i, int j, int r) {
         hostPlayer = h;
         X = x;
         Y = y;
         pointState = p;
         this.i = i;
         this.j = j;
+        radius = r;
     }
 
     /**
