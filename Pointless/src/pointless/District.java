@@ -20,18 +20,18 @@ public class District {
     private int ownerId;
     
     /**список точек, составляющих замкнутую область */
-    private ArrayList<Integer> brdrCount;
+    private ArrayList<Point> pointsArray;
 
-    public District (final int ownerId) {
+    public District (final int ownerId, ArrayList<Point> p) {
         this.ownerId = ownerId;
-        brdrCount = new ArrayList<Integer>();
+        pointsArray = p;
         pCountFPlayer = 0;
         pCountSPlayer = 0;
     }
     
-    public District (final int ownerId, final int pCountFPlayer, final int pCountSPlayer, final ArrayList<Integer> brdrCount) {
+    public District (final int ownerId, final int pCountFPlayer, final int pCountSPlayer, final ArrayList<Point> brdrCount) {
         this.ownerId = ownerId;
-        this.brdrCount = brdrCount;
+        this.pointsArray = brdrCount;
         this.pCountFPlayer = pCountFPlayer;
         this.pCountSPlayer = pCountSPlayer;
     }
@@ -44,8 +44,8 @@ public class District {
         return pCountSPlayer;
     }
 
-    public ArrayList<Integer> getBrdrCount() {
-        return brdrCount;
+    public ArrayList<Point> getPointsArray() {
+        return pointsArray;
     }
 
     public void setpCountFPlayer(final int pCountFPlayer) {
@@ -56,8 +56,8 @@ public class District {
         this.pCountSPlayer = pCountSPlayer;
     }
 
-    public void setBrdrCount(final ArrayList<Integer> brdrCount) {
-        this.brdrCount = brdrCount;
+    public void setPointsArray(final ArrayList<Point> brdrCount) {
+        this.pointsArray = brdrCount;
     }
     
      public int isOwnerId() {
