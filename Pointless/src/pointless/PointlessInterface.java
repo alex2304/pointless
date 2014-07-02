@@ -54,13 +54,17 @@ public class PointlessInterface extends javax.swing.JFrame {
     private void initComponents() {
 
         jSeparator1 = new javax.swing.JSeparator();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+
+        jMenuItem3.setText("jMenuItem3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -118,6 +122,9 @@ public class PointlessInterface extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu3.setText("Параметры");
+        jMenuBar1.add(jMenu3);
+
         jMenu2.setText("Справка");
         jMenuBar1.add(jMenu2);
 
@@ -146,7 +153,7 @@ public class PointlessInterface extends javax.swing.JFrame {
         controller = new Controller();
         g = jPanel1.getGraphics();
         int w = jPanel1.getWidth(), h = jPanel1.getHeight();
-        if (controller.initGame(w, h, squareSize, notActiveRadius, activeRadius, g, Color.red, Color.blue, Color.yellow, "Vasya", "Vazgen")){
+        if (controller.initGame(w, h, squareSize, notActiveRadius, activeRadius, g, Color.red, Color.blue, jPanel1.getBackground(), "Vasya", "Vazgen")){
             timer.start();
             JOptionPane.showMessageDialog(null,"Tut budet spravka");
         } else {
@@ -250,9 +257,11 @@ public class PointlessInterface extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;

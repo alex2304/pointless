@@ -218,9 +218,16 @@ public class Field {
         this.notActiveRadius = notActiveRadius;
         
         //отрисовка поля
+        clearField(g);
         drawField(g);
         
         return true;
+    }
+    
+    private void clearField(Graphics g){
+        g.clearRect(0, 0, this.Width, this.Height);
+        g.setColor(this.fieldColor);
+        g.fillRect(0, 0, this.Width, this.Height);
     }
     
     /** Отрисовка поля с точками и областями */
