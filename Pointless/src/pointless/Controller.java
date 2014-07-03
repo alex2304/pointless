@@ -9,6 +9,7 @@ package pointless;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,11 +21,19 @@ public class Controller {
     private Field field;
     
     /**переменные, использующиеся только при поиске замкнутой области */
+    private int activeNumberI, activeNumberJ; //координаты точки в массиве, в которую была поставлена точка
+    private ArrayList<Point> districtPoints; //Массив точек - кандидатов на замкнутую область
+    private ArrayList<Point> visitedPoints; //Массив посещённых точек
+    private Point.HostPlayer activePlayer;  //Игрок, сделавший ход
+    private int stepCount;  //количество шагов, сделанных по полю при поиске области
+    boolean isOblast; //есл и к концу цикла он останется false - мы в тупике.
+    //если tempI = activeNumberI && tempJ = activeNumberJ - всё збс
     enum Ways {
         T, R, B, L, TR, BR, BL, TL;
         public static int[] getIJ(Ways w, int[] in){ //переводит константу enum в массив из (i, j)
             int[] r = new int[2];
-            r = in;
+            r[0] = in[0];
+            r[1] = in[1];
             switch (w){
                 case T: r[0] += -1; r[1] += 0; break;
                 case R: r[0] += 0; r[1] += 1; break;
@@ -72,32 +81,56 @@ public class Controller {
         BL = (i + 1, j - 1)
         TL = (i - 1, j - 1)
     */
-    private int activeNumberI, activeNumberJ; //координаты точки в массиве, в которую была поставлена точка
-    private ArrayList<Point> districtPoints; //Массив точек - кандидатов на замкнутую область
-    private Point.HostPlayer activePlayer;  //Игрок, сделавший ход
-    private int stepCount;  //количество шагов, сделанных по полю при поиске области
-    //если tempI = activeNumberI && tempJ = activeNumberJ - всё збс
+    
+    /**функция проверяет массив посещённых точек и сообщает, была ли конкретная точка посещена */
+    private boolean isPointVisited(Point p){
+        for (int i = 0; i < visitedPoints.size(); i++){
+            if (p == visitedPoints.get(i)) return true;
+        }
+        return false;
+    }
     
     /** алгоритм нахождения ЛЮБОЙ замкнутой области */
     private void districtBackTrack(int i, int j, Ways lastWay){
-        int[] t = new int[2];
-        t[0] = i;
-        t[1] = j;
-        boolean isReturn = false; //если к концу цикла он останется false - мы в тупике.
-        
-        for (int k = 0; k < Ways.values().length; k++){
-            if (checkThePoint( Ways.getIJ( Ways.values()[k], t ) ) && Ways.invertWay(lastWay) != Ways.values()[k] ){  //если точка по очередному направлению доступна для движения
-                isReturn = true;
-                if (Ways.getIJ( Ways.values()[k], t )[0] == activeNumberI && Ways.getIJ( Ways.values()[k], t )[1] ==  activeNumberJ && lastWay != null && lastWay != Ways.invertWay(lastWay)){ //если пришли к началу пути
-                    break;
-                }
+        if (!isOblast){
+            
+            int[] old = new int[2]; //создаём массив из (i, j)
+            old[0] = i;
+            old[1] = j;
+            int[] _new = new int[2];   //создаём массив, который будет меняться
+            _new[0] = i;
+            _new[1] = j;
+            
+            if ( lastWay == null  ){
                 districtPoints.add(field.getPoints().get(i).get(j));
-                districtBackTrack(Ways.getIJ( Ways.values()[k], t )[0], Ways.getIJ( Ways.values()[k], t )[1], Ways.values()[k]);
+                visitedPoints.add(field.getPoints().get(i).get(j));
             }
+            
+            for (int k = 0; k < Ways.values().length; k++){
+                _new = Ways.getIJ( Ways.values()[k], old );
+                if (checkThePoint( _new ) && lastWay != Ways.values()[k] ){  //если точка по очередному направлению доступна для движения и это не путь назад
+                //isReturn = true;
+                //if (Ways.getIJ( Ways.values()[k], t )[0] == activeNumberI && Ways.getIJ( Ways.values()[k], t )[1] ==  activeNumberJ && lastWay != null && lastWay != Ways.invertWay(lastWay)){ //если пришли к началу пути
+                //    break; 
+                //}
+                //JOptionPane.showMessageDialog(null,"("+i+", "+j+")");
+                    if ( (_new[0] == activeNumberI && _new[1] == activeNumberJ) && (Ways.getIJ( lastWay, old )[0] != activeNumberI || Ways.getIJ( lastWay, old )[1] != activeNumberJ) ){
+                        isOblast = true;
+                        break;
+                    } else
+                    if ( !isPointVisited(field.getPoints().get(_new[0]).get(_new[1]))  ){
+                        districtPoints.add(field.getPoints().get(_new[0]).get(_new[1]));
+                        visitedPoints.add(field.getPoints().get(_new[0]).get(_new[1]));
+                        districtBackTrack(_new[0], _new[1], Ways.invertWay(Ways.values()[k]));
+                    } else
+                    {
+                        boolean b = true;
+                    }
+                
+                }
+            }
+            
         }
-        
-        
-        
     }
     
     
@@ -122,9 +155,12 @@ public class Controller {
                         P1.setStepNumber(P1.getStepNumber() + 1);       //увеличиваем число ходов 1 игрока 
                         activePlayer = Point.HostPlayer.Player1;        //запоминаем игрока, сделавшего последний ход.
                         if (P1.getStepNumber() >= 4){
+                            visitedPoints = new ArrayList<Point>();     //создаём пустой массив, в котором будут посещённые точки
                             districtPoints = new ArrayList<Point>();    //создаём точки под замкнутую область
+                            isOblast = false;
                             this.districtBackTrack(activeNumberI, activeNumberJ, null);  //вызов back-track функции
-                            this.field.createNewDistrict(new District(1, districtPoints)); //создаём новое поле 1 игрока из полученных точек
+                            if (isOblast)
+                                this.field.createNewDistrict(new District(1, districtPoints)); //создаём новое поле 1 игрока из полученных точек
                         }
                         break;
                     }
@@ -133,9 +169,12 @@ public class Controller {
                         P2.setStepNumber(P2.getStepNumber() + 1);       //увеличиваем число ходов 2 игрока 
                         activePlayer = Point.HostPlayer.Player2;        //запоминаем игрока, сделавшего последний ход.
                         if (P2.getStepNumber() >= 4){
+                            visitedPoints = new ArrayList<Point>();     //создаём пустой массив, в котором будут посещённые точки
                             districtPoints = new ArrayList<Point>();
+                            isOblast = false;
                             this.districtBackTrack(activeNumberI, activeNumberJ, null); //вызов back-track функции
-                            this.field.createNewDistrict(new District(2, districtPoints)); //создаём новое поле 2 игрока из полученных точек
+                            if (isOblast)
+                                this.field.createNewDistrict(new District(2, districtPoints)); //создаём новое поле 2 игрока из полученных точек
                         }
                         break;
                     }
