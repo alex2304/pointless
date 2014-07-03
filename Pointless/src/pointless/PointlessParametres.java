@@ -7,9 +7,22 @@
 package pointless;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.plaf.ColorUIResource;
 
 /**
  *
@@ -55,6 +68,11 @@ public class PointlessParametres extends javax.swing.JFrame {
         setLocationByPlatform(true);
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setText("Введите необходимые данные");
 
@@ -62,9 +80,21 @@ public class PointlessParametres extends javax.swing.JFrame {
 
         jLabel3.setText("Имя:");
 
-        jLabel4.setText("Цвет");
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
 
-        jLabel5.setText("Цвет");
+        jLabel4.setText("Цвет:");
+
+        jLabel5.setText("Цвет:");
+
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField2KeyTyped(evt);
+            }
+        });
 
         jLabel6.setText("Имя:");
 
@@ -73,6 +103,7 @@ public class PointlessParametres extends javax.swing.JFrame {
         jTextField3.setEditable(false);
         jTextField3.setBackground(new java.awt.Color(255, 255, 255));
         jTextField3.setToolTipText("");
+        jTextField3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jTextField3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTextField3MouseClicked(evt);
@@ -81,6 +112,7 @@ public class PointlessParametres extends javax.swing.JFrame {
 
         jTextField4.setEditable(false);
         jTextField4.setBackground(new java.awt.Color(255, 255, 255));
+        jTextField4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jTextField4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTextField4MouseClicked(evt);
@@ -88,6 +120,7 @@ public class PointlessParametres extends javax.swing.JFrame {
         });
 
         jButton1.setText("Сохранить");
+        jButton1.setEnabled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -163,29 +196,167 @@ public class PointlessParametres extends javax.swing.JFrame {
         playerColorDialog = new PointlessColor();
         playerNumber = 1;
         playerColorDialog.setVisible(true);
+        
+        if (jTextField1.getText() != null && jTextField2.getText() != null) 
+            jButton1.setEnabled(true);
     }//GEN-LAST:event_jTextField3MouseClicked
 
     private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField4MouseClicked
         playerColorDialog = new PointlessColor();
         playerNumber = 2;
         playerColorDialog.setVisible(true);
+        
+        if (jTextField1.getText() != null && jTextField2.getText() != null)  
+            jButton1.setEnabled(true);
     }//GEN-LAST:event_jTextField4MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0 
-        && jTextField3.getBackground() != Color.white && jTextField4.getBackground() != Color.white){ //если пользователь ввёл имена пользователей и выбрал цвет
+        //если пользователь ввёл имена пользователей и выбрал цвет
             PointlessInterface.player1Color = jTextField3.getBackground(); //устанавливаем цвета
             PointlessInterface.player2Color = jTextField4.getBackground(); //игрокам
             
             PointlessInterface.player1Name = jTextField1.getText(); //устанавливаем имена
             PointlessInterface.player2Name = jTextField2.getText(); //игрокам
+         
+            
+         try {
+             File configFile = new File("config.ini");
+             FileWriter wrt = new FileWriter(configFile);
+             wrt.write(PointlessInterface.player1Name+"\r\n");
+             wrt.write(jTextField3.getBackground()+"\r\n");
+             wrt.write(PointlessInterface.player2Name+"\r\n");
+             wrt.write(jTextField4.getBackground()+"\r\n");
+             wrt.close();
+         } catch (IOException ex) {
+             Logger.getLogger(PointlessParametres.class.getName()).log(Level.SEVERE, null, ex);
+         }
+            
             
             PointlessInterface.flagToStartTheGame = true;   //сообщаем, что можно начинать игру
             dispose();  //и завершаемся, мы больше не нужны =(
-        } else { //иначе сообщаем, что пользователь - кривой мудак :3 (всё-равно никто не прочитает этот коммент)
-            JOptionPane.showMessageDialog(null,"Пожалуйста, введите имена игроков!");
-        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        // TODO add your handling code here:
+        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0)  
+            jButton1.setEnabled(true);
+        else 
+            jButton1.setEnabled(false);
+    }//GEN-LAST:event_jTextField1KeyTyped
+
+    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+        // TODO add your handling code here:
+        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0)  
+            jButton1.setEnabled(true);
+        else 
+            jButton1.setEnabled(false);
+    }//GEN-LAST:event_jTextField2KeyTyped
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        try {
+             FileInputStream stringReader = new FileInputStream("config.ini");
+             InputStreamReader inputReader = new InputStreamReader(stringReader);
+             BufferedReader reader = new BufferedReader(inputReader);
+             
+             try {
+                 jTextField1.setText(reader.readLine()); 
+                 PointlessInterface.player1Name = jTextField1.getText(); //устанавливаем имена
+                 
+                 // Получение цвета первого игрока
+                 StringBuffer s = new StringBuffer (reader.readLine());
+                 String red = new String();
+                 String green = new String();
+                 String blue = new String();
+                 Integer r = new Integer(0);
+                 Integer g = new Integer(0);
+                 Integer b = new Integer(0);
+                 
+                 s.delete(0, 17);
+                 int i=0;
+                 while (s.charAt(i) != ',') {
+                     red = red + s.charAt(i);
+                     i++;
+                 }
+                 
+                 s.delete(0, i+3);
+                 
+                 i=0;
+                 while (s.charAt(i) != ',') {
+                     green = green + s.charAt(i);
+                     i++;
+                 }
+                 s.delete(0, i+3);
+                 
+                 i=0;
+                 while (s.charAt(i) != ']') {
+                     blue = blue + s.charAt(i);
+                     i++;
+                 }
+                 
+                 r = Integer.parseInt(red);
+                 g = Integer.parseInt(green);
+                 b = Integer.parseInt(blue);
+                 
+                 Color clr = new Color (r,g,b);
+                 
+                 jTextField3.setBackground(clr);
+                 // Получение законечно
+                 
+                 jTextField2.setText(reader.readLine()); 
+                 PointlessInterface.player1Name = jTextField2.getText();
+                 
+                 // Получение цвета второго игрока
+                    
+                 red = new String();
+                 green = new String();
+                 blue = new String();
+                 
+                 
+                 s = new StringBuffer(reader.readLine());
+                 s.delete(0, 17);
+                 i=0;
+                 while (s.charAt(i) != ',') {
+                     red = red + s.charAt(i);
+                     i++;
+                 }
+                 
+                 s.delete(0, i+3);
+                 
+                 i=0;
+                 while (s.charAt(i) != ',') {
+                     green = green + s.charAt(i);
+                     i++;
+                 }
+                 s.delete(0, i+3);
+                 
+                 i=0;
+                 while (s.charAt(i) != ']') {
+                     blue = blue + s.charAt(i);
+                     i++;
+                 }
+                 
+                 r = Integer.parseInt(red);
+                 g = Integer.parseInt(green);
+                 b = Integer.parseInt(blue);
+                 
+                 clr = new Color(r,g,b);
+                 
+                 jTextField4.setBackground(clr);
+                 // Закончено
+                 
+                 // Добавим всё это в панельку справа
+                 jButton1.setEnabled(true);
+                 
+             } catch (IOException ex) {
+                 Logger.getLogger(PointlessParametres.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             
+         } catch (FileNotFoundException ex) {
+             Logger.getLogger(PointlessParametres.class.getName()).log(Level.SEVERE, null, ex);
+         }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -220,6 +391,8 @@ public class PointlessParametres extends javax.swing.JFrame {
                 new PointlessParametres().setVisible(true);
             }
         });
+        
+         
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
