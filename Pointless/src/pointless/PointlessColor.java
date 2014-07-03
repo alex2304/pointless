@@ -20,13 +20,12 @@ public class PointlessColor extends javax.swing.JFrame {
     /**
      * Creates new form PointlessColor
      */
-    final JColorChooser clrChsr;
     
     
     public PointlessColor() {
         initComponents();
         setLocationRelativeTo(null);
-        clrChsr = new JColorChooser();
+
     }
 
     /**
@@ -45,9 +44,15 @@ public class PointlessColor extends javax.swing.JFrame {
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
 
+        jColorChooser1.setColor(new java.awt.Color(204, 0, 102));
         jColorChooser1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jColorChooser1MouseClicked(evt);
+            }
+        });
+        jColorChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jColorChooser1PropertyChange(evt);
             }
         });
 
@@ -84,19 +89,20 @@ public class PointlessColor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        Color s;
-        
-        s = clrChsr.getColor();
-        PointlessInterface.l.jTextField3.setBackground(s);
-        
-        dispose();
+        if (PointlessInterface.optionsDialog.playerNumber == 1)             //если в optionsDialog нужно выбрать цвет 1 игроку
+            PointlessInterface.optionsDialog.jTextField3.setBackground(jColorChooser1.getColor()); //устанавливаем цвет для первого игрока (это jTextField3)
+        else
+            PointlessInterface.optionsDialog.jTextField4.setBackground(jColorChooser1.getColor()); //иначе устанавливаем цвет второму игроку (jTextField4)
+        dispose(); //закрытие окна
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jColorChooser1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jColorChooser1MouseClicked
-        // TODO add your handling code here:
-        System.out.println(clrChsr.getColor());
+        System.out.println(jColorChooser1.getColor());
     }//GEN-LAST:event_jColorChooser1MouseClicked
+
+    private void jColorChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jColorChooser1PropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jColorChooser1PropertyChange
 
     /**
      * @param args the command line arguments
@@ -127,6 +133,7 @@ public class PointlessColor extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new PointlessColor().setVisible(true);
             }

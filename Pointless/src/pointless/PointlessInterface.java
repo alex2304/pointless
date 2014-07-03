@@ -22,28 +22,39 @@ import javax.swing.Timer;
 
 public class PointlessInterface extends javax.swing.JFrame {
 
-    Controller controller;
-    Graphics g;
-    Timer timer;
-    Point.HostPlayer activePlayer;
-    int squareSize = 23;
-    int notActiveRadius = 4;
-    int activeRadius = 10;
+    //==== ТЕХНИЧЕСКАЯ ЧАСТЬ ====//
+    Controller controller;  //контроллер, отвечающий за процесс игры
+    Graphics g;             //средство отрисовки игрового процесса  
+    Timer timer;            //таймер, перерисовывающий игровое поле
+    Point.HostPlayer activePlayer;  //обозначает игрока, который ходит в данный момент
+    //==== МАТЕМАТИЧЕСКИЕ ПАРАМЕТРЫ ====//
+    int squareSize = 23;    //расстояние между клетками
+    int notActiveRadius = 4; //радиус неактивной точки
+    int activeRadius = 10;  //радиус активной точки
+    //==== ПАРАМЕТРЫ ГЕЙМПЛЕЯ ====//
+    public static String player1Name, player2Name; //имена игроков
+    public static Color player1Color, player2Color; //цвета игроков
+    public static boolean flagToStartTheGame;       //флаг, необходимый для того, чтобы запустить игру после выбора параметров
     
     /**
      * Creates new form PointlessInterface
      */
-    public static PointlessParametres l = new PointlessParametres();
+    public static PointlessParametres optionsDialog = new PointlessParametres(); //диалог выбора имён и цвета игроков
     
     public PointlessInterface() {
         initComponents();
         activePlayer = Point.HostPlayer.Player1;
+        flagToStartTheGame = false;
         timer = new Timer(600, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (controller != null && g != null){
-                    controller.getField().drawField(g);
+                if (flagToStartTheGame) {               //если флаг поставлен, значит пользователь выбрал настройки и
+                    startGame();                        //можно начинать игру.
+                    flagToStartTheGame = false;         //.. а флаг лучше вернуть в исходное состояние, мало ли чего..
+                }
+                if (controller != null && g != null){   //после выполнения startGame() эта часть кода начнёт выполняться,
+                    controller.getField().drawField(g); //так как controller и g там инициализируются
                 }
             }
         });
@@ -263,18 +274,26 @@ public class PointlessInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    //кнопка "новая игра"
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    public void startGame(){
         controller = new Controller();
         g = jPanel1.getGraphics();
         int w = jPanel1.getWidth(), h = jPanel1.getHeight();
-        if (controller.initGame(w, h, squareSize, notActiveRadius, activeRadius, g, Color.red, Color.blue, jPanel1.getBackground(), "Vasya", "Vazgen")){
-            timer.start();
+        if (controller.initGame(w, h, squareSize, notActiveRadius, activeRadius, g, player1Color, player2Color, jPanel1.getBackground(), player1Name, player2Name)){
+            jTextField1.setText(player1Name);   //выводим в правую часть поля 
+            jTextField3.setText(player2Name);   //имена...
             
-            l.show();
+            jTextField2.setBackground(player1Color);    //... и цвета
+            jTextField4.setBackground(player2Color);    //игроков
         } else {
-            JOptionPane.showMessageDialog(null,"Sorry, the game does not started!");
+            JOptionPane.showMessageDialog(null,"Sorry, the game did not start!");
         }
+    }
+    
+    
+    //кнопка "новая игра"
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        optionsDialog.setVisible(true); //вызов диалога "выбор параметров" и запуск таймера
+        timer.start();  //таймер ожидает, когда придёт время начать игру
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     //выбор пользователем одной из точек
@@ -379,7 +398,8 @@ public class PointlessInterface extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PointlessInterface().setVisible(true);
+                PointlessInterface pointlessInterface = new PointlessInterface();
+                pointlessInterface.setVisible(true);
             }
         });
     }
