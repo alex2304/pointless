@@ -363,8 +363,7 @@ public class PointlessInterface extends javax.swing.JFrame {
 
     private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
         // TODO add your handling code here:
-        PointlessParametres l = new PointlessParametres();
-        l.show();
+         optionsDialog.setVisible(true); //вызов диалога "выбор параметров"
     }//GEN-LAST:event_jMenu3MouseClicked
 
     
