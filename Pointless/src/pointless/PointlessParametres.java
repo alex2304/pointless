@@ -40,6 +40,9 @@ public class PointlessParametres extends javax.swing.JFrame {
         playerNumber = 0;
         initComponents();
         setLocationRelativeTo(null);
+        if (jTextField1.getText().length() == 0 && jTextField2.getText().length() == 0)
+            jButton1.setEnabled(false);
+        else jButton1.setEnabled(true);
     }
 
     /**
@@ -197,7 +200,7 @@ public class PointlessParametres extends javax.swing.JFrame {
         playerNumber = 1;
         playerColorDialog.setVisible(true);
         
-        if (jTextField1.getText() != null && jTextField2.getText() != null) 
+        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0) 
             jButton1.setEnabled(true);
     }//GEN-LAST:event_jTextField3MouseClicked
 
@@ -206,7 +209,7 @@ public class PointlessParametres extends javax.swing.JFrame {
         playerNumber = 2;
         playerColorDialog.setVisible(true);
         
-        if (jTextField1.getText() != null && jTextField2.getText() != null)  
+        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0)   
             jButton1.setEnabled(true);
     }//GEN-LAST:event_jTextField4MouseClicked
 
@@ -217,8 +220,12 @@ public class PointlessParametres extends javax.swing.JFrame {
             
             PointlessInterface.player1Name = jTextField1.getText(); //устанавливаем имена
             PointlessInterface.player2Name = jTextField2.getText(); //игрокам
-         
             
+            if (jTextField3.getBackground().equals(jTextField4.getBackground())) {
+                JOptionPane.showMessageDialog(null,"Уоу-уоу-уоу, парни, полегче. В нашей игре два одинаковых цвета не могут вступать в отношения.");
+                
+            }
+            else {
          try {
              File configFile = new File("config.ini");
              FileWriter wrt = new FileWriter(configFile);
@@ -234,23 +241,24 @@ public class PointlessParametres extends javax.swing.JFrame {
             
             PointlessInterface.flagToStartTheGame = true;   //сообщаем, что можно начинать игру
             dispose();  //и завершаемся, мы больше не нужны =(
+        }
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
         // TODO add your handling code here:
-        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0)  
-            jButton1.setEnabled(true);
-        else 
+        if (jTextField1.getText().length() == 0 && jTextField2.getText().length() == 0)  
             jButton1.setEnabled(false);
+        else 
+            jButton1.setEnabled(true);
     }//GEN-LAST:event_jTextField1KeyTyped
 
     private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
         // TODO add your handling code here:
-        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0)  
-            jButton1.setEnabled(true);
-        else 
+        if (jTextField1.getText().length() == 0 && jTextField2.getText().length() == 0)  
             jButton1.setEnabled(false);
+        else 
+            jButton1.setEnabled(true);
     }//GEN-LAST:event_jTextField2KeyTyped
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
