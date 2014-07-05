@@ -222,24 +222,23 @@ public class PointlessParametres extends javax.swing.JFrame {
             PointlessInterface.player2Name = jTextField2.getText(); //игрокам
             
             if (jTextField3.getBackground().equals(jTextField4.getBackground())) {
-                JOptionPane.showMessageDialog(null,"Уоу-уоу-уоу, парни, полегче. В нашей игре два одинаковых цвета не могут вступать в отношения.");
-                
+                JOptionPane.showMessageDialog(null,"Уоу-уоу-уоу, парни, полегче. В нашей игре два одинаковых цвета не могут вступать в отношения."); //лойс :D
             }
             else {
-         try {
-             File configFile = new File("config.ini");
-             FileWriter wrt = new FileWriter(configFile);
-             wrt.write(PointlessInterface.player1Name+"\r\n");
-             wrt.write(jTextField3.getBackground()+"\r\n");
-             wrt.write(PointlessInterface.player2Name+"\r\n");
-             wrt.write(jTextField4.getBackground()+"\r\n");
-             wrt.close();
-         } catch (IOException ex) {
-             Logger.getLogger(PointlessParametres.class.getName()).log(Level.SEVERE, null, ex);
-         }
-            
-            
-            PointlessInterface.flagToStartTheGame = true;   //сообщаем, что можно начинать игру
+            try {
+                File configFile = new File("config.ini");
+                FileWriter wrt = new FileWriter(configFile);
+                wrt.write(PointlessInterface.player1Name+"\r\n");
+                wrt.write(jTextField3.getBackground()+"\r\n");
+                wrt.write(PointlessInterface.player2Name+"\r\n");
+                wrt.write(jTextField4.getBackground()+"\r\n");
+                wrt.close();
+            } catch (IOException ex) {
+                Logger.getLogger(PointlessParametres.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (!PointlessInterface.isOnlyOptionFlag){
+                PointlessInterface.flagToStartTheGame = true;   //сообщаем, что можно начинать игру
+            }
             dispose();  //и завершаемся, мы больше не нужны =(
         }
         
@@ -262,7 +261,7 @@ public class PointlessParametres extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2KeyTyped
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        // TODO add your handling code here:
+        // ебаать сколько кода о_0
         try {
              FileInputStream stringReader = new FileInputStream("config.ini");
              InputStreamReader inputReader = new InputStreamReader(stringReader);

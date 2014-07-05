@@ -266,6 +266,8 @@ public class Field {
     public void drawField(Graphics g){
         int offsetActive = 4, offsetNotActive = 2;
         
+        clearField(g);
+        
         g.setColor(Color.decode("#799EE7"));
         for (int i = 0; i <= this.verticalPointCount; i++){
             g.drawLine(0, i*this.lineSize, this.Width, i*this.lineSize);
@@ -326,7 +328,8 @@ public class Field {
         if (p != null){
                     p.setHostPlayer(h);  //устанавливаем игрока-хозяина для точки
                     p.setPointState(s);  //устанавливаем статус для точки
-                    p.setRadius(this.activeRadius);
+                    if (h != Point.HostPlayer.Free && s != Point.PointState.EMPTY)
+                        p.setRadius(this.activeRadius); else p.setRadius(this.notActiveRadius);
                     return true;
          }
         return false;
