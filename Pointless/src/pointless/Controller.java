@@ -106,27 +106,25 @@ public class Controller {
                 visitedPoints.add(field.getPoints().get(i).get(j));
             }
             
-            for (int k = 0; k < Ways.values().length; k++){
-                _new = Ways.getIJ( Ways.values()[k], old );
-                if (checkThePoint( _new ) && lastWay != Ways.values()[k] ){  //если точка по очередному направлению доступна для движения и это не путь назад
-                //isReturn = true;
-                //if (Ways.getIJ( Ways.values()[k], t )[0] == activeNumberI && Ways.getIJ( Ways.values()[k], t )[1] ==  activeNumberJ && lastWay != null && lastWay != Ways.invertWay(lastWay)){ //если пришли к началу пути
-                //    break; 
-                //}
-                //JOptionPane.showMessageDialog(null,"("+i+", "+j+")");
-                    if ( (_new[0] == activeNumberI && _new[1] == activeNumberJ) && (Ways.getIJ( lastWay, old )[0] != activeNumberI || Ways.getIJ( lastWay, old )[1] != activeNumberJ) ){
+            for (Ways value : Ways.values()) {
+                _new = Ways.getIJ(value, old);
+                if (checkThePoint( _new ) && lastWay != value) {
+                    //если точка по очередному направлению доступна для движения и это не путь назад
+                    //isReturn = true;
+                    //if (Ways.getIJ( Ways.values()[k], t )[0] == activeNumberI && Ways.getIJ( Ways.values()[k], t )[1] ==  activeNumberJ && lastWay != null && lastWay != Ways.invertWay(lastWay)){ //если пришли к началу пути
+                    //    break;
+                    //}
+                    //JOptionPane.showMessageDialog(null,"("+i+", "+j+")");
+                    if ((_new[0] == activeNumberI && _new[1] == activeNumberJ) && (Ways.getIJ( lastWay, old )[0] != activeNumberI || Ways.getIJ( lastWay, old )[1] != activeNumberJ)) {
                         isOblast = true;
                         break;
-                    } else
-                    if ( !isPointVisited(field.getPoints().get(_new[0]).get(_new[1]))  ){
+                    } else if (!isPointVisited(field.getPoints().get(_new[0]).get(_new[1]))) {
                         districtPoints.add(field.getPoints().get(_new[0]).get(_new[1]));
                         visitedPoints.add(field.getPoints().get(_new[0]).get(_new[1]));
-                        districtBackTrack(_new[0], _new[1], Ways.invertWay(Ways.values()[k]));
-                    } else
-                    {
+                        districtBackTrack(_new[0], _new[1], Ways.invertWay(value));
+                    } else {
                         boolean b = true;
                     }
-                
                 }
             }
             
