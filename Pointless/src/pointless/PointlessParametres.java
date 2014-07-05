@@ -68,6 +68,7 @@ public class PointlessParametres extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
@@ -122,7 +123,7 @@ public class PointlessParametres extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Сохранить");
+        jButton1.setText("Начать игру");
         jButton1.setEnabled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -246,18 +247,19 @@ public class PointlessParametres extends javax.swing.JFrame {
 
     private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
         // TODO add your handling code here:
-        if (jTextField1.getText().length() == 0 && jTextField2.getText().length() == 0)  
-            jButton1.setEnabled(false);
-        else 
+        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0)
             jButton1.setEnabled(true);
+        else 
+            jButton1.setEnabled(false);
+            
     }//GEN-LAST:event_jTextField1KeyTyped
 
     private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
         // TODO add your handling code here:
-        if (jTextField1.getText().length() == 0 && jTextField2.getText().length() == 0)  
-            jButton1.setEnabled(false);
-        else 
+        if (jTextField1.getText().length() != 0 && jTextField2.getText().length() != 0)
             jButton1.setEnabled(true);
+        else 
+            jButton1.setEnabled(false);
     }//GEN-LAST:event_jTextField2KeyTyped
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
