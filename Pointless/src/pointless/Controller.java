@@ -25,7 +25,7 @@ public class Controller {
     private ArrayList<Point> districtPoints; //Массив точек - кандидатов на замкнутую область
     private ArrayList<Point> visitedPoints; //Массив посещённых точек
     private Point.HostPlayer activePlayer;  //Игрок, сделавший ход
-    private int stepCount;  //количество шагов, сделанных по полю при поиске области
+    private int pointsCount;  //количество шагов, сделанных по полю при поиске области
     boolean isOblast; //есл и к концу цикла он останется false - мы в тупике.
     //если tempI = activeNumberI && tempJ = activeNumberJ - всё збс
     enum Ways {
@@ -82,6 +82,70 @@ public class Controller {
         TL = (i - 1, j - 1)
     */
     
+    /**
+     * Офигительная функция.
+     * Получает на вход список точек, в которых точно есть хотя бы одна замкнутая область.
+     * @return та же область с убранными внешними точками, не входящими в область!!!
+     */
+    private void removeGarbagePoints(){
+        boolean flag = true;
+        int c = 0;
+        while (flag){
+            flag = false;
+            for (int i = 0; i < districtPoints.size(); i++){
+                if ( (c = countOfNeighborsInList(districtPoints, districtPoints.get(i))) <= 1 ){  //если у точки только один сосед - она определённо не область!
+                    districtPoints.remove(i);
+                    flag = true;
+                    break;
+                }
+            }
+        }
+    }
+    
+    /** @return количество точек из заданного списка, с которыми данная точка имеет связь */
+    private int countOfNeighborsInList(ArrayList<Point> points, Point p){
+        int result = 0; //результат
+        if (p != null){
+            int[] old = new int[2]; //создаём массив из (i, j)
+            old[0] = p.getI();
+            old[1] = p.getJ();
+            int[] _new = new int[2];   //создаём массив, который будет меняться
+            _new[0] = p.getI();
+            _new[1] = p.getJ();
+            
+            for (Ways value : Ways.values()) {                
+                _new = Ways.getIJ(value, old);
+                for (int i = 0; i < points.size(); i++){
+                    if (_new[0] == points.get(i).getI() && _new[1] == points.get(i).getJ() && p != points.get(i) ){
+                        result++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
+    /** @return количество точек, с которыми данная точка имеет связь */
+    private int countOfNeighboringPoints(Point p){
+        int result = 0; //результат
+        if (p != null){
+            int[] old = new int[2]; //создаём массив из (i, j)
+            old[0] = p.getI();
+            old[1] = p.getJ();
+            int[] _new = new int[2];   //создаём массив, который будет меняться
+            _new[0] = p.getI();
+            _new[1] = p.getJ();
+            
+            for (Ways value : Ways.values()) {                
+                _new = Ways.getIJ(value, old);
+                if (checkThePoint( _new )) {
+                    result++;
+                }
+            }
+        }
+        return result;
+    }
+    
     /**функция проверяет массив посещённых точек и сообщает, была ли конкретная точка посещена */
     private boolean isPointVisited(Point p){
         for (int i = 0; i < visitedPoints.size(); i++){
@@ -90,9 +154,88 @@ public class Controller {
         return false;
     }
     
-    /** алгоритм нахождения ЛЮБОЙ замкнутой области */
+    /**
+     * 
+     * @return array [0..3]:
+     * [0] = минимальное по вертикали
+     * [1] = минимальное по горизонтали
+     * [2] = максимальное по вертикали
+     * [3] = максимальное по горизонтали
+     */
+    private int[] getCoordArray(){
+        int[] result = new int[4];
+        result[0] = field.getVerticalPointCount();
+        result[1] = field.getHorizontalPointCount();
+        result[2] = 0;
+        result[3] = 0;
+        Point p;
+        
+        for (Point districtPoint : districtPoints) {
+            p = districtPoint;
+            if (p.getI() < result[0]) result[0] = p.getI();
+            if (p.getJ() < result[1]) result[1] = p.getJ();
+            if (p.getI() > result[2]) result[2] = p.getI();
+            if (p.getJ() > result[3]) result[3] = p.getJ();
+        }
+        
+        return result;
+    }
+    
+    /** 
+     * Проверяет, является 
+     */
+    
+    /** Самая замечательная функция :3 
+     *  Вычисляет по готовой области, подходят ли точки.
+     */
+    private int checkCapturedPoints(){
+        int result = 0;  //количество точек, захваченных активным игроком
+        int[] coord = new int[4], lengthI, lengthJ;
+        
+        coord = getCoordArray();
+        
+        //няшный трёхмерный массив :3
+        //[N, B, R, T, L]
+        
+        ArrayList<ArrayList<ArrayList<Boolean>>> boolPoints = new ArrayList<ArrayList<ArrayList<Boolean>>>();
+        for (int i = 0; i < coord[2] - coord[0]; i++){
+            boolPoints.add(new ArrayList<ArrayList<Boolean>>());
+            for (int j = 0; j < coord[3] - coord[1]; j++){
+                boolPoints.get(i).add(new ArrayList<Boolean>());
+                for (int k = 0; k < 5; k++){
+                    boolPoints.get(i).get(j).add(new Boolean(false));
+                }
+            }
+        }
+        
+        int i = coord[0];
+        int j = coord[1];
+        Point p;
+        
+        while (i < coord[2] + 1){
+            while (j < coord[3] + 1){
+                p = field.getPoints().get(i).get(j);
+                if (!boolPoints.get(i - coord[0]).get(j - coord[1]).get(0)){//проверяем, нужно ли вообще трогать точку
+                    if (p.getHostPlayer() != Point.HostPlayer.Free && p.getHostPlayer() != activePlayer && p.getPointState() == Point.PointState.ACTIVE){  //если точка нам в принципе интересна
+                         
+                        
+                    } else boolPoints.get(i - coord[0]).get(j - coord[1]).set(0, Boolean.TRUE);  //устанавливаем флаг непригодности
+                } else
+                {
+                    if (p.getIsCounted() && )
+                }
+                j++;
+            }
+            
+            i++;
+        }
+        
+        return result;
+    }
+    
+    /** алгоритм нахождения всех замкнутных областей области */
     private void districtBackTrack(int i, int j, Ways lastWay){
-        if (!isOblast){
+        //if (!isOblast){
             
             int[] old = new int[2]; //создаём массив из (i, j)
             old[0] = i;
@@ -116,11 +259,11 @@ public class Controller {
                     //}
                     //JOptionPane.showMessageDialog(null,"("+i+", "+j+")");
                     if ((_new[0] == activeNumberI && _new[1] == activeNumberJ) && (Ways.getIJ( lastWay, old )[0] != activeNumberI || Ways.getIJ( lastWay, old )[1] != activeNumberJ)) {
-                        isOblast = true;
+                        isOblast = true;    //если мы вернулись в первую точку по циклу
                         break;
-                    } else if (!isPointVisited(field.getPoints().get(_new[0]).get(_new[1]))) {
-                        districtPoints.add(field.getPoints().get(_new[0]).get(_new[1]));
+                    } else if (!isPointVisited(field.getPoints().get(_new[0]).get(_new[1]))) { //если мы не в первой точке, но следующей точки ещё не было)
                         visitedPoints.add(field.getPoints().get(_new[0]).get(_new[1]));
+                        districtPoints.add(field.getPoints().get(_new[0]).get(_new[1]));
                         districtBackTrack(_new[0], _new[1], Ways.invertWay(value));
                     } else {
                         boolean b = true;
@@ -128,7 +271,7 @@ public class Controller {
                 }
             }
             
-        }
+        //}
     }
     
     
@@ -157,8 +300,10 @@ public class Controller {
                             districtPoints = new ArrayList<Point>();    //создаём точки под замкнутую область
                             isOblast = false;
                             this.districtBackTrack(activeNumberI, activeNumberJ, null);  //вызов back-track функции
-                            if (isOblast)
+                            if (isOblast){                                              //если область была найдена
+                                removeGarbagePoints();                      //удаляем все точки, не относящиеся к области
                                 this.field.createNewDistrict(new District(1, districtPoints)); //создаём новое поле 1 игрока из полученных точек
+                            }    
                         }
                         break;
                     }
@@ -171,8 +316,10 @@ public class Controller {
                             districtPoints = new ArrayList<Point>();
                             isOblast = false;
                             this.districtBackTrack(activeNumberI, activeNumberJ, null); //вызов back-track функции
-                            if (isOblast)
-                                this.field.createNewDistrict(new District(2, districtPoints)); //создаём новое поле 2 игрока из полученных точек
+                            if (isOblast){                                              //если область была найдена
+                                removeGarbagePoints();                      //удаляем все точки, не относящиеся к области
+                                this.field.createNewDistrict(new District(2, districtPoints)); //создаём новое поле 1 игрока из полученных точек
+                            }
                         }
                         break;
                     }
@@ -194,6 +341,10 @@ public class Controller {
         if (temp != null)
             if (temp.getPointState() == Point.PointState.EMPTY) return temp;
         return null;
+    }
+    
+    public int countOfCapturedPoints(){
+        return 0;
     }
     
     /** проверка на образование области 

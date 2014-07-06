@@ -31,6 +31,25 @@ public class Point {
     /**радиус точки */
     private int radius;
     
+    /**посчитана/не посчитана (в подсчёте очков) */
+    private boolean isCounted;
+    
+    /**
+     * посчитана/не посчитана
+     * @return 
+     */
+    public boolean getIsCounted() {
+        return isCounted;
+    }
+
+    /**
+     * радиус точки
+     * @param radius the radius to set
+     */
+    public void setIsCounted(boolean b) {
+        this.isCounted = b;
+    }
+    
     /**
      * радиус точки
      * @return the radius
@@ -114,6 +133,7 @@ public class Point {
         i = 0;
         j = 0;
         radius = 0;
+        isCounted = false;
     }
     
     /**
@@ -127,6 +147,7 @@ public class Point {
         this.i = i;
         this.j = j;
         radius = r;
+        isCounted = false;
     }
 
     /**
