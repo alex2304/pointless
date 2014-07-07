@@ -15,13 +15,13 @@ public class Player {
     private String name;
     /** Айдишник игрока и количество захваченных точек противника */
     private int id, pCount;
-    /** Имя игрока (вводится пользователем) */
+    /** Количество игроков */
     private static int pId = 0;
     /** Номер хода игрока */
     private int stepNumber;
     
     public Player() {
-        
+        pCount = 0;
     }
     
     public Player(String newName) {
@@ -29,6 +29,7 @@ public class Player {
         pId++;
         id=pId;
         stepNumber = 0;
+        pCount = 0;
     }
     
     public String getName() {

@@ -295,13 +295,33 @@ public class Field {
                 
             }
         }
+        
+        int[] xPoint;
+        int[] yPoint;
+        for (int i = 0; i < districts.size(); i++){ //отрисовка закрашенных областей
+            if (districts.get(i).getPointsArray().size() != 0) {  //если область  не пуста (а вдруг?)
+                xPoint = new int[districts.get(i).getPointsArray().size()];
+                yPoint = new int[districts.get(i).getPointsArray().size()];
+                for (int j = 0; j < districts.get(i).getPointsArray().size(); j++){
+                    xPoint[j] = (int)districts.get(i).getPointsArray().get(j).getX();  //собираем точки очередной области в массивы
+                    yPoint[j] = (int)districts.get(i).getPointsArray().get(j).getY();  //определённой структуры
+                }
+                if (districts.get(i).getOwnerId() == 1) g.setColor(this.color1); else g.setColor(color2); //цветом два будет закрашивать, если возможна ошибка!
+                g.fillPolygon(xPoint, yPoint, districts.get(i).getPointsArray().size());
+            }
+            
+            
+        }
     }
     
     /** Добавление новой области и её отрисовка */
     public void createNewDistrict (District newDistrict) {
         districts.add(newDistrict); // необходимо удалить внутренние области
+        //for (int i = 0; i < newDistrict.getPointsArray().size(); i++){
+        //    this.getPointByCoor(newDistrict.getPointsArray().get(i).getX(), newDistrict.getPointsArray().get(i).getY()).setPointState(Point.PointState.NOTAVAILABLE);
+        //}
         for (int i = 0; i < newDistrict.getPointsArray().size(); i++){
-            this.getPointByCoor(newDistrict.getPointsArray().get(i).getX(), newDistrict.getPointsArray().get(i).getY()).setPointState(Point.PointState.NOTAVAILABLE);
+            
         }
     }
   

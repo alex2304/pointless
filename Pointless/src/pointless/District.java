@@ -61,11 +61,19 @@ public class District {
     }
     
      public int isOwnerId() {
-        return ownerId;
+        return getOwnerId();
     }
 
     public void setOwnerId(final int ownerId) {
         this.ownerId = ownerId;
+    }
+
+    /**
+     * номер игрока, захватившего поле
+     * @return the ownerId
+     */
+    public int getOwnerId() {
+        return ownerId;
     }
      
 }

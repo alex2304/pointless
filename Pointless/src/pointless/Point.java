@@ -142,7 +142,7 @@ public class Point {
     public Point(float x, float y, PointState p, HostPlayer h, int i, int j, int r) {
         hostPlayer = h;
         X = x;
-        Y = y;
+        Y = y; 
         pointState = p;
         this.i = i;
         this.j = j;
