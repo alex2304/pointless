@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Класс Контроллер. Основной класс, отвечает за весь процесс игры.
+ * Хранит данные об игроках, а также экземпляр Поля.
  */
 
 package pointless;
@@ -9,17 +8,16 @@ package pointless;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author Leha
  */
 public class Controller {
+    //==== ДАННЫЕ КЛАССА ==== \\
     private boolean gameStart;
     private Player P1, P2;
     private Field field;
-    
     /**переменные, использующиеся только при поиске замкнутой области */
     private int activeNumberI, activeNumberJ; //координаты точки в массиве, в которую была поставлена точка
     private ArrayList<Point> districtPoints; //Массив точек - кандидатов на замкнутую область
@@ -28,36 +26,62 @@ public class Controller {
     private int pointsCount;  //количество шагов, сделанных по полю при поиске области
     boolean isOblast; //есл и к концу цикла он останется false - мы в тупике.
     private Analyst.PlayerMove lastStep; //результат последнего состоявшегося хода игрока
-
+    //==== ДАННЫЕ КЛАССА ==== \\
+    
+    
+    //==== МОДИФИКАТОРЫ И СЕЛЕКТОРЫ ==== \\
     /**
      * @return the P1
      */
     public Player getP1() {
         return P1;
     }
-
     /**
      * @return the P2
      */
     public Player getP2() {
         return P2;
     }
-
     /**
      * @return the lastStep
      */
     public Analyst.PlayerMove getLastStep() {
         return lastStep;
     }
-
     /**
      * @param lastStep the lastStep to set
      */
     public void setLastStep(Analyst.PlayerMove lastStep) {
         this.lastStep = lastStep;
     }
-    //если tempI = activeNumberI && tempJ = activeNumberJ - всё збс
+    /**
+     * @return the field
+     */
+    public Field getField() {
+        return field;
+    }
+    /**
+     * @param field the field to set
+     */
+    public void setField(Field field) {
+        this.field = field;
+    }
+    //==== МОДИФИКАТОРЫ И СЕЛЕКТОРЫ ==== \\
+    
+    
+    //Класс Ways, характеризующий направления движения
     enum Ways {
+        /*
+        T = (i - 1, j)
+        R = (i, j +1)
+        B = (i + 1, j)
+        L = (i, j -1)
+        
+        TR = (i - 1, j + 1)
+        BR = (i + 1, j + 1)
+        BL = (i + 1, j - 1)
+        TL = (i - 1, j - 1)
+        */
         T, R, B, L, TR, BR, BL, TL;
         public static int[] getIJ(Ways w, int[] in){ //переводит константу enum в массив из (i, j)
             int[] r = new int[2];
@@ -99,18 +123,9 @@ public class Controller {
             return invert;
         }
     }
-    /*
-        T = (i - 1, j)
-        R = (i, j +1)
-        B = (i + 1, j)
-        L = (i, j -1)
-        
-        TR = (i - 1, j + 1)
-        BR = (i + 1, j + 1)
-        BL = (i + 1, j - 1)
-        TL = (i - 1, j - 1)
-    */
     
+    
+    //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
     /**
      * Офигительная функция.
      * Получает на вход список точек, в которых точно есть хотя бы одна замкнутая область.
@@ -130,7 +145,6 @@ public class Controller {
             }
         }
     }
-    
     /** @return количество точек из заданного списка, с которыми данная точка имеет связь */
     private int countOfNeighborsInList(ArrayList<Point> points, Point p){
         int result = 0; //результат
@@ -153,8 +167,7 @@ public class Controller {
         }
         return result;
     }
-    
-    /** @return количество точек, с которыми данная точка имеет связь */
+    /** @return количество точек, с которыми данная точка имеет связь  на поле точек */
     private int countOfNeighboringPoints(Point p){
         int result = 0; //результат
         if (p != null){
@@ -174,7 +187,6 @@ public class Controller {
         }
         return result;
     }
-    
     /**функция проверяет массив посещённых точек и сообщает, была ли конкретная точка посещена */
     private boolean isPointVisited(Point p){
         for (int i = 0; i < visitedPoints.size(); i++){
@@ -182,7 +194,6 @@ public class Controller {
         }
         return false;
     }
-    
     /**
      * 
      * @return array [0..3]:
@@ -209,7 +220,6 @@ public class Controller {
         
         return result;
     }
-    
     /** 
      * Проверяет, входит ли текущая точка в массив границ
      */
@@ -224,7 +234,6 @@ public class Controller {
         }
         return false;
     }
-    
     /** Самая замечательная функция :3 
      *  Вычисляет по готовой области, подходят ли точки.
      */
@@ -259,9 +268,6 @@ public class Controller {
                 bool_i = i - coord[0]; //координата i для булевского массива
                 bool_j = j - coord[1]; //координата j для булевского массива
                 p = field.getPoints().get(i).get(j);
-                //if (!boolPoints.get(bool_i).get(bool_j).get(0)){//проверяем, нужно ли вообще трогать точку
-                    //if (p.getHostPlayer() != Point.HostPlayer.Free && ){  //если точка принадлежит кому-то из игроков
-                        //проверка границ
                     
                         //ОБЯЗАТЕЛЬНАЯ проверка верхней и левой границ
                         if (!isPointInDistrict(p)){//если точка сама не граница
@@ -424,7 +430,6 @@ public class Controller {
         
         return false;
     }
-    
     /** алгоритм нахождения всех замкнутных областей области */
     private void districtBackTrack(int i, int j, Ways lastWay){
         //if (!isOblast){
@@ -445,11 +450,6 @@ public class Controller {
                 _new = Ways.getIJ(value, old);
                 if (checkThePoint( _new ) && lastWay != value) {
                     //если точка по очередному направлению доступна для движения и это не путь назад
-                    //isReturn = true;
-                    //if (Ways.getIJ( Ways.values()[k], t )[0] == activeNumberI && Ways.getIJ( Ways.values()[k], t )[1] ==  activeNumberJ && lastWay != null && lastWay != Ways.invertWay(lastWay)){ //если пришли к началу пути
-                    //    break;
-                    //}
-                    //JOptionPane.showMessageDialog(null,"("+i+", "+j+")");
                     if ((_new[0] == activeNumberI && _new[1] == activeNumberJ) && (Ways.getIJ( lastWay, old )[0] != activeNumberI || Ways.getIJ( lastWay, old )[1] != activeNumberJ)) {
                         isOblast = true;    //если мы вернулись в первую точку по циклу
                         break;
@@ -462,11 +462,7 @@ public class Controller {
                     }
                 }
             }
-            
-        //}
     }
-    
-    
     /** метод проверяет, может ли точка быть частью замкнутой области */
     private boolean checkThePoint(int[] v){
         if (v[1] < field.getHorizontalPointCount() && v[1] >= 0 && v[0] < field.getVerticalPointCount() && v[0] >= 0){ //проверка выхода координат за границы
@@ -475,7 +471,6 @@ public class Controller {
         }
         return false;
     }
-    
     /** Ход игрока. PlayerId указывается в main */
     public boolean action(int playerId, float pX, float pY) {
         Point tmp = pointCheck(pX,pY);
@@ -527,26 +522,18 @@ public class Controller {
         }
     return false;
     }
-    
+    /**
+     * Проверяет, является ли точка с координатами (px, py) свободной
+     * @param pX
+     * @param pY
+     * @return объект точка
+     */
     public Point pointCheck (float pX, float pY) {
         Point temp = this.getField().getPointByCoor(pX, pY);
         if (temp != null)
             if (temp.getPointState() == Point.PointState.EMPTY) return temp;
         return null;
     }
-    
-    public int countOfCapturedPoints(){
-        return 0;
-    }
-    
-    /** проверка на образование области 
-    * здесь же создаётся "обводка"*/
-    public boolean districtCheck(int pX, int pY) {
-        return true;
-    }
-    
-     
-    
     /** Инициализация игры. Передаёт данные для создания поля. Если поле создано, то создаёт игроков.
      * @return можно ли начинать игру */
     public boolean initGame(int width, int height, int lineSize, int notActiveRadius, int activeRadius, Graphics g, Color p1, Color p2, Color fieldColor, String name1, String name2) {
@@ -560,21 +547,7 @@ public class Controller {
         }
         
         return gameStart;
-    }
-
-    /**
-     * @return the field
-     */
-    public Field getField() {
-        return field;
-    }
-
-    /**
-     * @param field the field to set
-     */
-    public void setField(Field field) {
-        this.field = field;
-    }
-    
+    }    
+    //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
     
 }

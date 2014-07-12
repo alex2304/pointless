@@ -41,6 +41,7 @@ public class PointlessColor extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
 

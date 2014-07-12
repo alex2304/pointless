@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package pointless;
 
 import java.awt.Color;
@@ -20,8 +19,6 @@ import javax.swing.Timer;
  *
  * @author Leha
  */
-
-
 public class PointlessInterface extends javax.swing.JFrame {
 
     //==== ТЕХНИЧЕСКАЯ ЧАСТЬ ====//
@@ -39,14 +36,16 @@ public class PointlessInterface extends javax.swing.JFrame {
     //==== ПАРАМЕТРЫ ГЕЙМПЛЕЯ ====//
     public static String player1Name, player2Name; //имена игроков
     public static Color player1Color, player2Color; //цвета игроков
+    public static Color fieldColor;                 //цвет поля
     public static boolean flagToStartTheGame;       //флаг, необходимый для того, чтобы запустить игру после выбора параметров
     public static boolean isOnlyOptionFlag; //флаг, необходимый чтобы отличить применение параметров по кнопке "параметры" и при нажатии "новая игра"
-    
+
     /**
      * Creates new form PointlessInterface
      */
     public static PointlessParametres optionsDialog; //диалог выбора имён и цвета игроков
-    
+    public static PointlessProperties propertiesDialog; //диалог выбора настроек программы
+
     public PointlessInterface() {
         initComponents();
         optionsDialog = new PointlessParametres();
@@ -55,12 +54,12 @@ public class PointlessInterface extends javax.swing.JFrame {
         flagToStartTheGame = false;
         isOnlyOptionFlag = false;
         timer = new Timer(500, new ActionListener() {
-        
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (flagToStartTheGame) {               //если флаг поставлен, значит пользователь выбрал настройки и
                     startGame();                        //можно начинать игру.
-                    if (activePlayer == Point.HostPlayer.Player1){
+                    if (activePlayer == Point.HostPlayer.Player1) {
                         jTextField5.setText("Ходит " + player1Name);
                         jTextField6.setBackground(player1Color);
                     } else {
@@ -70,10 +69,10 @@ public class PointlessInterface extends javax.swing.JFrame {
 
                     flagToStartTheGame = false;         //.. а флаг лучше вернуть в исходное состояние, мало ли чего..
                 }
-                if (controller != null && g != null){   //после выполнения startGame() эта часть кода начнёт выполняться,
+                if (controller != null && g != null) {   //после выполнения startGame() эта часть кода начнёт выполняться,
                     controller.getField().drawField(g); //так как controller и g там инициализируются
-                    jTextField7.setText(""+controller.getP1().getpCount());
-                    jTextField8.setText(""+controller.getP2().getpCount());
+                    jTextField7.setText("" + controller.getP1().getpCount());
+                    jTextField8.setText("" + controller.getP2().getpCount());
                 }
             }
         });
@@ -440,25 +439,28 @@ public class PointlessInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void startGame(){
+    public void startGame() {
         controller = new Controller();
         g = jPanel1.getGraphics();
         int w = jPanel1.getWidth(), h = jPanel1.getHeight();
         double currPlayer = Math.random(); //справедливый арбитр Math.random() решает, кому начинать матч =)
-        if (currPlayer > 0.5) activePlayer = Point.HostPlayer.Player1; else activePlayer = Point.HostPlayer.Player2;
-        if (controller.initGame(w, h, squareSize, notActiveRadius, activeRadius, g, player1Color, player2Color, jPanel1.getBackground(), player1Name, player2Name)){
+        if (currPlayer > 0.5) {
+            activePlayer = Point.HostPlayer.Player1;
+        } else {
+            activePlayer = Point.HostPlayer.Player2;
+        }
+        if (controller.initGame(w, h, squareSize, notActiveRadius, activeRadius, g, player1Color, player2Color, jPanel1.getBackground(), player1Name, player2Name)) {
             jTextField1.setText(player1Name);   //выводим в правую часть поля 
             jTextField3.setText(player2Name);   //имена...
-            
+
             jTextField2.setBackground(player1Color);    //... и цвета
             jTextField4.setBackground(player2Color);    //игроков
             jButton1.setEnabled(true);
         } else {
-            JOptionPane.showMessageDialog(null,"Sorry, the game did not start!");
+            JOptionPane.showMessageDialog(null, "Sorry, the game did not start!");
         }
     }
-    
-    
+
     //кнопка "новая игра"
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         isOnlyOptionFlag = false;
@@ -469,51 +471,50 @@ public class PointlessInterface extends javax.swing.JFrame {
 
     //выбор пользователем одной из точек
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
-        if (activePlayer == Point.HostPlayer.Player1){
-            if (controller.action(1, evt.getX(), evt.getY())){
-                
+        if (activePlayer == Point.HostPlayer.Player1) {
+            if (controller.action(1, evt.getX(), evt.getY())) {
+
                 currTime = System.currentTimeMillis(); //получаем секунды с начала отсчёта времени в компах)
                 curDate = new Date(currTime); //создаём из этого дату
-                jTextArea1.append(curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds() + " >> " + commentator.yourWord(controller.getP1(), controller.getLastStep())+"\r\n");//добавляем это всё на поле
-                
+                jTextArea1.append(curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds() + " >> " + commentator.yourWord(controller.getP1(), controller.getLastStep()) + "\r\n");//добавляем это всё на поле
+
                 if (controller.getLastStep() != Analyst.PlayerMove.LUCKY) { //если игрок неуспешно завершил предыдущий ход
                     activePlayer = Point.HostPlayer.Player2;
                     jTextField5.setText("Ходит " + player2Name);
                     jTextField6.setBackground(player2Color);
-                } 
-                
-                 controller.getField().drawField(g);
+                }
+
+                controller.getField().drawField(g);
             }
-        } else
-        if (activePlayer == Point.HostPlayer.Player2){
-            if (controller.action(2, evt.getX(), evt.getY())){
+        } else if (activePlayer == Point.HostPlayer.Player2) {
+            if (controller.action(2, evt.getX(), evt.getY())) {
                 currTime = System.currentTimeMillis(); //получаем секунды с начала отсчёта времени в компах)
                 curDate = new Date(currTime); //создаём из этого дату
-                jTextArea1.append(curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds() + " >> " + commentator.yourWord(controller.getP2(), controller.getLastStep())+"\r\n");
-                
+                jTextArea1.append(curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds() + " >> " + commentator.yourWord(controller.getP2(), controller.getLastStep()) + "\r\n");
+
                 if (controller.getLastStep() != Analyst.PlayerMove.LUCKY) { //если игрок успешно завершил предыдущий ход
                     activePlayer = Point.HostPlayer.Player1;
-                    
+
                     jTextField5.setText("Ходит " + player1Name);
                     jTextField6.setBackground(player1Color);
                 }
-                
+
                 controller.getField().drawField(g);
             }
-                
+
         }
     }//GEN-LAST:event_jPanel1MouseClicked
-    
+
     //изменение курсора при наведении на доступную точку
     private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
-        if (controller != null && g != null){
+        if (controller != null && g != null) {
             Point p = controller.getField().getPointByCoor(evt.getX(), evt.getY());
-            if (p != null){
-                if (Cursor.getDefaultCursor() == jPanel1.getCursor()){  //если стандартный курсор
+            if (p != null) {
+                if (Cursor.getDefaultCursor() == jPanel1.getCursor()) {  //если стандартный курсор
                     jPanel1.setCursor(Cursor.getPredefinedCursor(1));
                 }
             } else {
-                if (Cursor.getDefaultCursor() != jPanel1.getCursor()){
+                if (Cursor.getDefaultCursor() != jPanel1.getCursor()) {
                     jPanel1.setCursor(Cursor.getDefaultCursor());
                 }
             }
@@ -528,7 +529,7 @@ public class PointlessInterface extends javax.swing.JFrame {
 
     //событие пи клике на что-то другое
     private void jMenu1MenuDeselected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu1MenuDeselected
-        if (controller != null && timer != null && g != null){
+        if (controller != null && timer != null && g != null) {
             //JOptionPane.showMessageDialog(null,"vp");
             timer.start();
             controller.getField().drawField(g);
@@ -537,8 +538,8 @@ public class PointlessInterface extends javax.swing.JFrame {
 
     //событие при отмене выбора меню
     private void jMenu1MenuCanceled(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu1MenuCanceled
-        if (controller != null && timer != null && g != null){
-            JOptionPane.showMessageDialog(null,"aaa");
+        if (controller != null && timer != null && g != null) {
+            JOptionPane.showMessageDialog(null, "aaa");
             timer.start();
             controller.getField().drawField(g);
         }
@@ -553,8 +554,8 @@ public class PointlessInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
-         isOnlyOptionFlag = true;
-         optionsDialog.setVisible(true); //вызов диалога "выбор параметров"
+        isOnlyOptionFlag = true;
+        optionsDialog.setVisible(true); //вызов диалога "выбор параметров"
     }//GEN-LAST:event_jMenu3MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -564,9 +565,10 @@ public class PointlessInterface extends javax.swing.JFrame {
             int start = JOptionPane.showConfirmDialog(null, "Хотите изменить параметры игры?", "Окно сообщения", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (start == JOptionPane.YES_OPTION) {
                 jMenuItem1ActionPerformed(evt);
-            } else startGame();
-        }
-        else {
+            } else {
+                startGame();
+            }
+        } else {
             setVisible(false);
             System.exit(0);
         }
@@ -574,31 +576,30 @@ public class PointlessInterface extends javax.swing.JFrame {
 
     private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null,"Описание:\n" +
-"В игру играют два человека. Имеется клетчатое поле, на котором игрокам предлагается расставлять точки определённых цветов (цвета игроки\n" +
-"выбирают себе перед началом игры). Соседними являются точки, расстояние между которыми равно стороне клетки (по вертикали, горизонтали или\n" +
-"диагонали). Если соседние точки, расставленные одним игроком, образуют замкнутую геометрическую фигуру, то игрок может соединить их. Все\n" +
-"точки другого игрока, оказавшиеся в этой области, считаются \"завоёванными\". Цель игры - \"поймать\" как можно больше точек соперника. Игра\n" +
-"заканчивается, когда один из игроков поднимает белый флаг, либо же по истечению свободных клеток на поле (поле имеет ограниченный размер).\n" +
-"\n" +
-"Правила и уточнения:\n" +
-"1. Игроки ходят по очереди. Каждый игрок может ставить точку в любое свободное место на поле, за исключением области, которая уже была\n" +
-"обведена. После захвата области игрок имеет дополнительный ход.\n" +
-"\n" +
-"2. Захватывать можно только те области, в которых есть хотя бы одна точка соперника. Все точки захваченной области становятся\n" +
-"недействительными, то есть их нельзя использовать для создания новых областей. Ставить точки в уже захваченные области не имеет смысла.\n" +
-"Если вам больше некуда ставить точки, то ваша жизнь - тлен, поднимайте белый флаг и прыгайте за борт. Карамба:)\n" +
-"\n" +
-"3. Цель игры - захватить как можно больше точек соперника. По окончании игры побеждает игрок, захвативший больше точек.");
+        JOptionPane.showMessageDialog(null, "Описание:\n"
+                + "В игру играют два человека. Имеется клетчатое поле, на котором игрокам предлагается расставлять точки определённых цветов (цвета игроки\n"
+                + "выбирают себе перед началом игры). Соседними являются точки, расстояние между которыми равно стороне клетки (по вертикали, горизонтали или\n"
+                + "диагонали). Если соседние точки, расставленные одним игроком, образуют замкнутую геометрическую фигуру, то игрок может соединить их. Все\n"
+                + "точки другого игрока, оказавшиеся в этой области, считаются \"завоёванными\". Цель игры - \"поймать\" как можно больше точек соперника. Игра\n"
+                + "заканчивается, когда один из игроков поднимает белый флаг, либо же по истечению свободных клеток на поле (поле имеет ограниченный размер).\n"
+                + "\n"
+                + "Правила и уточнения:\n"
+                + "1. Игроки ходят по очереди. Каждый игрок может ставить точку в любое свободное место на поле, за исключением области, которая уже была\n"
+                + "обведена. После захвата области игрок имеет дополнительный ход.\n"
+                + "\n"
+                + "2. Захватывать можно только те области, в которых есть хотя бы одна точка соперника. Все точки захваченной области становятся\n"
+                + "недействительными, то есть их нельзя использовать для создания новых областей. Ставить точки в уже захваченные области не имеет смысла.\n"
+                + "Если вам больше некуда ставить точки, то ваша жизнь - тлен, поднимайте белый флаг и прыгайте за борт. Карамба:)\n"
+                + "\n"
+                + "3. Цель игры - захватить как можно больше точек соперника. По окончании игры побеждает игрок, захвативший больше точек.");
     }//GEN-LAST:event_jMenu2MouseClicked
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-         setVisible(false);
+        setVisible(false);
         System.exit(0);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    
     /**
      * @param args the command line arguments
      */
@@ -670,5 +671,5 @@ public class PointlessInterface extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
-    
+
 }

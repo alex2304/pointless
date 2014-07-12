@@ -1,7 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+
+/**
+ * Класс Поле, отвечающий за всё что связано с отрисовкой поля.
+ * Хранит графические параметры,используемые для отрисовки,
+ * а также массив точек поля с их характеристиками и 
+ * массив занятых областей.
  */
 
 package pointless;
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
- *
  * @author Leha
  */
 public class Field {
@@ -37,7 +38,6 @@ public class Field {
      * Цвет поля
      */
     private Color fieldColor;
-    
     /**
      * Количество точек в поле
      */
@@ -47,11 +47,11 @@ public class Field {
      */
     private int lineSize;
     /**
-     * Радиус активной точки
+     * Радиус активной и неактивной точки
      */
     private int activeRadius;
-    //==== ДАННЫЕ КЛАССА ==== \\
     private int notActiveRadius;
+    //==== ДАННЫЕ КЛАССА ==== \\
 
     
     //==== МОДИФИКАТОРЫ И СЕЛЕКТОРЫ ==== \\
@@ -222,6 +222,7 @@ public class Field {
     
     
     //==== ОСНОВНЫЕ МЕТОДЫ ==== \\
+    
     /** Инициализация поля, готового к игре */
     public boolean initializeGame(int width, int height, int lineSize, Color c1, Color c2, Color fieldColor, Graphics g, int notActiveRadius, int activeRadius){
         horizontalPointCount = width / lineSize - 1; //количество точек по горизонтали
@@ -316,13 +317,7 @@ public class Field {
     
     /** Добавление новой области и её отрисовка */
     public void createNewDistrict (District newDistrict) {
-        districts.add(newDistrict); // необходимо удалить внутренние области
-        //for (int i = 0; i < newDistrict.getPointsArray().size(); i++){
-        //    this.getPointByCoor(newDistrict.getPointsArray().get(i).getX(), newDistrict.getPointsArray().get(i).getY()).setPointState(Point.PointState.NOTAVAILABLE);
-        //}
-        for (int i = 0; i < newDistrict.getPointsArray().size(); i++){
-            
-        }
+        districts.add(newDistrict);
     }
   
     /** Позволяет получить точку, попадающую в заданную область */
@@ -330,10 +325,6 @@ public class Field {
         for (int i = 0; i < verticalPointCount; i++){
             for (int j = 0; j < this.getHorizontalPointCount(); j++)
             {
-                /*if ( ( points.get(i).get(j).getX() >= (x - lineSize / 3) || //условие попадания точки в квадрат
-                points.get(i).get(j).getX() <= (x + lineSize / 3) ) &&  //вокруг точки, которую
-                ( points.get(i).get(j).getY() >= (y - lineSize / 3) ||  //нажал пользователь
-                points.get(i).get(j).getY() <= (y + lineSize / 3) ) )*/
                 if ( (x - points.get(i).get(j).getX())*(x - points.get(i).get(j).getX())    //условие попадания точки в круг
                 + (y - points.get(i).get(j).getY())*(y - points.get(i).get(j).getY()) <= this.activeRadius*this.activeRadius ){ //вокруг точки, которую нажал пользователь
                     return points.get(i).get(j);
